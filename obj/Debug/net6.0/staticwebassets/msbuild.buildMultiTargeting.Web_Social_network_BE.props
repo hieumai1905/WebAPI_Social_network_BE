@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Web_Social_network_BE.props" />
+</Project>
