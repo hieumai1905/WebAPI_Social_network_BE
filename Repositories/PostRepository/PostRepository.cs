@@ -13,8 +13,7 @@ namespace Web_Social_network_BE.Repositories.PostRepository
         {
             try
             {
-                var posts = await _context.Posts.Where(x => x.UserId == userId).ToListAsync();
-                return await _context.Posts.Where(x => x.UserId == userId).ToListAsync();
+                return await _context.Posts.Where(context => context.UserId == userId).ToListAsync();
             }
             catch (Exception ex)
             {
