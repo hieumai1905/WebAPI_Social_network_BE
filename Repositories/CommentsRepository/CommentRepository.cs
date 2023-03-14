@@ -22,7 +22,7 @@ namespace Web_Social_network_BE.Repositories.CommentRepository
                 throw new ArgumentException($"Post with id {postId} does not exist");
             }
         }
-        public async Task<Post> AddCommnetByPostIdAsync(string postId, Comment entity)
+        public async Task<Post> AddCommentByPostIdAsync(string postId, Comment entity)
         {
             var postToComment = await _context.Posts.FirstOrDefaultAsync(u => u.PostId == postId).ConfigureAwait(false);
             if (postToComment == null)
