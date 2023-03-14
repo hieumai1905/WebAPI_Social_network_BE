@@ -6,6 +6,6 @@ namespace Web_Social_network_BE.Repository.ImageRepository
 {
     public interface IImageRepository : IGeneralRepository<Image,string>
     {
-        Task<IEnumerable> GetImageById(string key);
+        Task<IEnumerable> GetImageByPostId(string key);
     }
 }

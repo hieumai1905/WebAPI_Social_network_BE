@@ -24,7 +24,7 @@ namespace Web_Social_network_BE.Repository.RelationRepository
                 throw new Exception("An error occurred while getting all relation for user.", ex); 
             }
         }
-        public async Task<IEnumerable> GetFriendById(string key)
+        public async Task<IEnumerable> GetFriendByUserId(string key)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace Web_Social_network_BE.Repository.RelationRepository
                 throw new Exception("an error occurred while getting all relation friend for user by id", ex);
             }
         }
-        public async Task<IEnumerable> GetBlockById(string key)
+        public async Task<IEnumerable> GetBlockByUserId(string key)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace Web_Social_network_BE.Repository.RelationRepository
                 throw new Exception("an error occurred while getting all relation block for user by id", ex);
             }
         }
-        public async Task<IEnumerable> GetFollowById(string key)
+        public async Task<IEnumerable> GetFollowByUserId(string key)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace Web_Social_network_BE.Repository.RelationRepository
                 throw new Exception("an error occurred while getting all relation follow for user by id", ex);
             }
         }
-        public async Task<IEnumerable> GetWaitingById(string key)
+        public async Task<IEnumerable> GetWaitingUserById(string key)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace Web_Social_network_BE.Repository.RelationRepository
                 throw new Exception("an error occurred while getting all relation waiting for user by id", ex);
             }
         }
-        public async Task<IEnumerable> GetRequestById(string key)
+        public async Task<IEnumerable> GetRequestByUserId(string key)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace Web_Social_network_BE.Repository.RelationRepository
                 throw new Exception("an error occurred while getting all relation request for user by id", ex);
             }
         }
-        public async Task<IEnumerable> GetAllRelationbyId(string key)
+        public async Task<IEnumerable> GetAllRelationbyUserId(string key)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace Web_Social_network_BE.Repository.RelationRepository
                 throw new Exception("an error occurred while update relation", ex);
             }
         }
-        public async Task DeleteFriendById(string UserId, string UserTargetId)
+        public async Task DeleteFriendByUserId(string UserId, string UserTargetId)
         {
             try
             {

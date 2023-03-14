@@ -22,7 +22,7 @@ namespace Web_Social_network_BE.Repository.ImageRepository
                 throw new Exception("An error occurred while getting all image for post.", ex);
             }
         }
-        public async Task<IEnumerable> GetImageById (string key)
+        public async Task<IEnumerable> GetImageByPostId (string key)
         {
             try
             {

@@ -5,12 +5,12 @@ namespace Web_Social_network_BE.Repository.RelationRepository
 {
     public interface IRelationRepository : IGeneralRepository<Relation,String>
     {
-        Task<IEnumerable> GetAllRelationbyId(string key);
-        Task<IEnumerable> GetFriendById(string key);
-        Task<IEnumerable> GetBlockById(string key);
-        Task<IEnumerable> GetFollowById(string key);
-        Task<IEnumerable> GetWaitingById(string key);
-        Task<IEnumerable> GetRequestById(string key);
-        Task DeleteFriendById(String UserId, String UserTargetId);
+        Task<IEnumerable> GetAllRelationbyUserId(string key);
+        Task<IEnumerable> GetFriendByUserId(string key);
+        Task<IEnumerable> GetBlockByUserId(string key);
+        Task<IEnumerable> GetFollowByUserId(string key);
+        Task<IEnumerable> GetWaitingUserById(string key);
+        Task<IEnumerable> GetRequestByUserId(string key);
+        Task DeleteFriendByUserId(String UserId, String UserTargetId);
     }
 }
