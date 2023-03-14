@@ -1,7 +1,7 @@
 ﻿using Web_Social_network_BE.Models;
 using Web_Social_network_BE.Repositories;
 
-namespace Chaythurepo.Repository.LikeRepository
+namespace Web_Social_network_BE.Repositories.LikeRepository
 {
     public interface ILikeRepository: IGeneralRepository<Like, long>
     {
