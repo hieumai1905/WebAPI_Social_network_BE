@@ -1,7 +1,7 @@
 ﻿using Web_Social_network_BE.Models;
 using Web_Social_network_BE.Repositories;
 
-namespace Chaythurepo.Repository.CommentRepository
+namespace Web_Social_network_BE.Repositories.CommentRepository
 {
     public interface ICommentRepository: IGeneralRepository<Comment, long>
     {
