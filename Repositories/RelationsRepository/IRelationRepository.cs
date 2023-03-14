@@ -5,7 +5,7 @@ namespace Web_Social_network_BE.Repository.RelationRepository
 {
     public interface IRelationRepository : IGeneralRepository<Relation,String>
     {
-        Task<IEnumerable> GetAllRelationbyUserId(string key);
+        Task<IEnumerable> GetAllRelationByUserId(string key);
         Task<IEnumerable> GetFriendByUserId(string key);
         Task<IEnumerable> GetBlockByUserId(string key);
         Task<IEnumerable> GetFollowByUserId(string key);

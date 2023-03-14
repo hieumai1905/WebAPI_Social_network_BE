@@ -79,7 +79,7 @@ namespace Web_Social_network_BE.Repository.RelationRepository
                 throw new Exception("an error occurred while getting all relation request for user by id", ex);
             }
         }
-        public async Task<IEnumerable> GetAllRelationbyUserId(string key)
+        public async Task<IEnumerable> GetAllRelationByUserId(string key)
         {
             try
             {
