@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.Design;
 
-namespace Chaythurepo.Repository.CommentRepository
+namespace Web_Social_network_BE.Repositories.CommentRepository
 {
     public class CommentRepository : ICommentRepository
     {
