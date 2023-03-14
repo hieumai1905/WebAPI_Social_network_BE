@@ -7,7 +7,7 @@ namespace Web_Social_network_BE.Repositories.CommentRepository
     {
         
         Task<IEnumerable<Comment>> GetAllCommentByPostIdAsync(string postId);
-        Task<Post> AddCommnetByPostIdAsync(string postId, Comment entity);
+        Task<Post> AddCommentByPostIdAsync(string postId, Comment entity);
         Task<Post> UpdateCommentByPostIdAsync(string postId, Comment entity);
         Task<Comment> DeleteCommentByPostIdAsync(string postId, long commentId);
         
