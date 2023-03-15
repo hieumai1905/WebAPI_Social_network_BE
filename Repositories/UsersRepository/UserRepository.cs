@@ -91,14 +91,14 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
         }
 
-        public async Task<UsersInfo> GetUserInfoAsync(string userUserInfoId)
+        public async Task<UsersInfo> GetUserInfoAsync(string userInfoId)
         {
             var userInfo = await _context.UsersInfos
-                .FirstOrDefaultAsync(u => u.UserInfoId == userUserInfoId).ConfigureAwait(false);
+                .FirstOrDefaultAsync(u => u.UserInfoId == userInfoId).ConfigureAwait(false);
 
             if (userInfo == null)
             {
-                throw new ArgumentException($"User info with id {userUserInfoId} not found");
+                throw new ArgumentException($"User info with id {userInfoId} not found");
             }
 
             return userInfo;
