@@ -1,7 +1,7 @@
 ﻿using Web_Social_network_BE.Models;
 using System.Collections;
 using Web_Social_network_BE.Repositories;
-namespace Web_Social_network_BE.Repository.RelationRepository
+namespace Web_Social_network_BE.Repositories.RelationRepository
 {
     public interface IRelationRepository : IGeneralRepository<Relation,String>
     {

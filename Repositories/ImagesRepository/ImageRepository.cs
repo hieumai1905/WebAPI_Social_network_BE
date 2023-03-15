@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
 
-namespace Web_Social_network_BE.Repository.ImageRepository
+namespace Web_Social_network_BE.Repositories.ImageRepository
 {
     public class ImageRepository : IImageRepository
     {
