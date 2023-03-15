@@ -3937,19 +3937,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Admin\\.nuget\\packages\\": {}
+    "C:\\Users\\Hsa1pro\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\Source\\Repos\\WebAPI_Social_network_BE\\Web_Social_network_BE.csproj",
+      "projectUniqueName": "C:\\Users\\Hsa1pro\\Desktop\\WebAPI_Social_network_BE\\Web_Social_network_BE.csproj",
       "projectName": "Web_Social_network_BE",
-      "projectPath": "C:\\Users\\Admin\\Source\\Repos\\WebAPI_Social_network_BE\\Web_Social_network_BE.csproj",
-      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\Source\\Repos\\WebAPI_Social_network_BE\\obj\\",
+      "projectPath": "C:\\Users\\Hsa1pro\\Desktop\\WebAPI_Social_network_BE\\Web_Social_network_BE.csproj",
+      "packagesPath": "C:\\Users\\Hsa1pro\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Hsa1pro\\Desktop\\WebAPI_Social_network_BE\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Hsa1pro\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

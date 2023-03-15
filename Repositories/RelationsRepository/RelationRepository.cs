@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections;
 using System.Collections.Concurrent;
 
-namespace Web_Social_network_BE.Repository.RelationRepository
+namespace Web_Social_network_BE.Repositories.RelationRepository
 {
     public class RelationRepository:IRelationRepository
     {
