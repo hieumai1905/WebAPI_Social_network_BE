@@ -1,5 +1,8 @@
 ﻿using Web_Social_network_BE.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using Microsoft.VisualBasic;
+
 namespace Web_Social_network_BE.Repositories.PostRepository
 {
     public class PostRepository : IPostRepository
@@ -17,7 +20,7 @@ namespace Web_Social_network_BE.Repositories.PostRepository
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while get all post by user id {userId}. ", ex);
+                throw new Exception($"An error occurred while get all post by user with id {userId}. ", ex);
             }
         }
         public async Task<IEnumerable<Post>> GetAllAsync()
@@ -28,7 +31,7 @@ namespace Web_Social_network_BE.Repositories.PostRepository
             }
             catch (Exception ex)
             {
-                throw new Exception("Error while get all post. ", ex);
+                throw new Exception("An error occurred while get all post.", ex);
             }
         }
         public Task<Post> GetByIdAsync(string postId)
@@ -39,7 +42,7 @@ namespace Web_Social_network_BE.Repositories.PostRepository
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while get post id {postId}", ex);
+                throw new Exception($"An error occurred while get post with id {postId}", ex);
             }
         }
         public async Task<Post> AddAsync(Post entity)
@@ -52,7 +55,7 @@ namespace Web_Social_network_BE.Repositories.PostRepository
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while add new post {entity.PostId}", ex);
+                throw new Exception($"An error occurred while add new post with id {entity.PostId}", ex);
             }
         }
         public async Task UpdateAsync(Post entity)
@@ -62,30 +65,31 @@ namespace Web_Social_network_BE.Repositories.PostRepository
                 var postToUpdate = await _context.Posts.AsNoTracking().FirstOrDefaultAsync(x => x.PostId == entity.PostId);
                 if (postToUpdate == null)
                 {
-                    throw new ArgumentException("Error while update post");
+                    throw new ArgumentException("Error postToUpdate is not exist");
                 }
                 _context.Posts.Update(entity);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while updating user with id {entity.PostId}.", ex);
+                throw new Exception($"An error occurred while updating post with id {entity.PostId}.", ex);
             }
         }
-        public async Task DeleteAsync(string userId)
+        public async Task DeleteAsync(string postId)
         {
             try
             {
-                List<Post> list = _context.Posts.Where(context => context.UserId == userId).ToList();
-                for (int i = 0; i < list.Count; i++)
+                Post postToDelete = await _context.Posts.FirstOrDefaultAsync(context => context.PostId == postId);
+                if (postToDelete == null)
                 {
-                    _context.Posts.Remove(list[i]);
+                    throw new ArgumentException("Error postToDelete is not exist");
                 }
-                await _context.SaveChangesAsync();
+                _context.Posts.Remove(postToDelete);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while delete post user {userId}.", ex);
+                throw new Exception($"An error occurred while deleting post with id {postId}.", ex);
             }
         }
 

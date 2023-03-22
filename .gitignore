@@ -1,1 +1,6 @@
 SocialNetworkN01Context.cs
+.vs/
+Models/
+obj/
+Repositories/
+!Repositories/PostRepository/
