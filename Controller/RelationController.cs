@@ -149,7 +149,7 @@ namespace Web_Social_network_BE.Controller
             }
         }
         // User có id = UserId từ chối lời mời kết bạn của user có id = UserTargetId
-        [HttpDelete("{UserId}/friend-requests/{RequestId}/reject")]
+        [HttpDelete("{UserId}/friend-requests/{UserTargetId}/reject")]
         public async Task<IActionResult> Reject(string UserId,string UserTargetId)
         {
             try
