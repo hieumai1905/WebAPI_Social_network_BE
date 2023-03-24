@@ -109,30 +109,75 @@ namespace Web_Social_network_BE.Controller
                 relationUserWaiting.TypeRelation = "WAITING";
                 relationUserWaiting.UserId = UserTargetId;
                 relationUserWaiting.UserTargetIduserId = UserId;
-                var addedRelationRequest = await _relationRepository.AddAsync(relationUserRequest);
-                var addedRelationWaiting = await _relationRepository.AddAsync(relationUserWaiting);
+                await _relationRepository.AddAsync(relationUserRequest);
+                await _relationRepository.AddAsync(relationUserWaiting);
                 return Ok();
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while adding relation: {ex.Message}");
+                return StatusCode(500, $"An error occurred while sending friend request : {ex.Message}");
+            }
+        }
+        //User có id = UserId block user có id = UserTargetId
+        [HttpPost("{UserId}/block/{UserTargetId}")]  
+        public async Task<IActionResult> BlockUser(string UserId, string UserTargetId)
+        {
+            try
+            {
+                Relation relationBlock = new Relation();
+                relationBlock.RelationId = Guid.NewGuid().ToString();
+                relationBlock.TypeRelation = "BLOCK";
+                relationBlock.UserId = UserId;
+                relationBlock.UserTargetIduserId = UserTargetId;
+                await _relationRepository.AddAsync(relationBlock);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while block: {ex.Message}");
+            }
+        }
+        //User có id = UserId Follow User có id = UserTargetId
+        [HttpPost("{UserId}/follow/{UserTargetId}")]
+        public async Task<IActionResult> FollowUser(string UserId, string UserTargetId)
+        {
+            try
+            {
+                Relation relationFollow = new Relation();
+                relationFollow.RelationId = Guid.NewGuid().ToString();
+                relationFollow.TypeRelation = "FOLLOW";
+                relationFollow.UserId = UserId;
+                relationFollow.UserTargetIduserId = UserTargetId;
+                await _relationRepository.AddAsync(relationFollow);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while follow : {ex.Message}");
             }
         }
         //User có id = UserTargetId chấp nhận lời mời kết bạn của user có id = UserId
         [HttpPut("{UserId}/friend-request/{UserTargetId}/accept")]
         public async Task<IActionResult> AcceptFriendRequest (string UserId, string UserTargetId)
         {
-            var relationRequest = _relationRepository.GetRequestByUserIdAndUserTargetId(UserId, UserTargetId);
-            var relationWaiting = _relationRepository.GetWaitingByUserIdAndUserTargetId(UserId, UserTargetId);
-            relationRequest.TypeRelation = "FRIEND";
-            relationWaiting.TypeRelation = "FRIEND";
-            await _relationRepository.UpdateAsync(relationRequest);
-            await _relationRepository.UpdateAsync(relationWaiting);
-            return Ok();
+            try
+            {
+                var relationRequest = _relationRepository.GetRequestByUserIdAndUserTargetId(UserId, UserTargetId);
+                var relationWaiting = _relationRepository.GetWaitingByUserIdAndUserTargetId(UserId, UserTargetId);
+                relationRequest.TypeRelation = "FRIEND";
+                relationWaiting.TypeRelation = "FRIEND";
+                await _relationRepository.UpdateAsync(relationRequest);
+                await _relationRepository.UpdateAsync(relationWaiting);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
         //User có id = UserId xóa mối quan hệ bạn bè với user có id = FriendId
         [HttpDelete("{UserId}/friends/{FriendId}")]
-        public async Task<IActionResult> Delete(string UserId, string FriendId)
+        public async Task<IActionResult> UnFriend (string UserId, string FriendId)
         {
             try
             {
@@ -145,10 +190,10 @@ namespace Web_Social_network_BE.Controller
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while deleting relation with id : {ex.Message}");
+                return StatusCode(500, $"An error occurred while unfriend relation with id : {ex.Message}");
             }
         }
-        // User có id = UserId từ chối lời mời kết bạn của user có id = UserTargetId
+        // User có id = UserTargetId từ chối lời mời kết bạn của user có id = UserId
         [HttpDelete("{UserId}/friend-requests/{UserTargetId}/reject")]
         public async Task<IActionResult> Reject(string UserId,string UserTargetId)
         {
@@ -163,7 +208,43 @@ namespace Web_Social_network_BE.Controller
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while deleting relation with id : {ex.Message}");
+                return StatusCode(500, $"An error occurred while reject friend request with id : {ex.Message}");
+            }
+        }
+        //User có id = UserId hủy follow với user có id = UserTargetId
+        [HttpDelete("{UserId}/follow/{UserTargetId}")]
+        public async Task<IActionResult> UnFollow (string UserId, string UserTargetId)
+        {
+            try
+            {
+                await _relationRepository.DeleteFollowByUserId(UserId, UserTargetId);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while unfollow with id : {ex.Message}");
+            }
+        }
+        //User có id = UserTargetId hủy block với user có id = UserTargetId
+        [HttpDelete("{UserId}/block/{UserTargetId}")]
+        public async Task<IActionResult> UnBlock (string UserId, string UserTargetId)
+        {
+            try
+            {
+                await _relationRepository.DeleteBlockByUserId(UserId, UserTargetId);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while unblock with id : {ex.Message}");
             }
         }
     }
