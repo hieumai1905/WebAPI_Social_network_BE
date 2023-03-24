@@ -15,5 +15,7 @@ namespace Web_Social_network_BE.Repositories.RelationRepository
         Relation GetWaitingByUserIdAndUserTargetId(string UserId, string UserTargetId);
         Task RejectFriendRequestByUserId(string UserId, string UserTargetId);
         Task DeleteFriendByUserId(string UserId, string UserTargetId);
+        Task DeleteBlockByUserId(string UserId, string UserTargetId); 
+        Task DeleteFollowByUserId (string UserId, string UserTargetId);
     }
 }

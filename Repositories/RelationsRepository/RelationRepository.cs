@@ -171,22 +171,60 @@ namespace Web_Social_network_BE.Repositories.RelationRepository
         {
             try
             {
-                var relationtoDelete = await _context.Relations.Where(x => x.UserId == UserId || x.UserId == UserTargetId).Where(x => x.UserTargetIduserId == UserTargetId || x.UserTargetIduserId == UserId).Where(x => x.TypeRelation == "WAITING" || x.TypeRelation == "REQUEST").ToListAsync();
-                if (relationtoDelete == null)
+                var relationRequest = await _context.Relations.Where(x => x.UserId == UserId && x.UserTargetIduserId == UserTargetId && x.TypeRelation == "REQUEST").ToListAsync();
+                var relationWaiting = await _context.Relations.Where(x => x.UserId == UserTargetId && x.UserTargetIduserId == UserId && x.TypeRelation == "WAITING").ToListAsync();
+                if (relationRequest == null)
                 {
                     throw new ArgumentException("Relation does not exist");
                 }
-                foreach (var item in relationtoDelete)
+                if (relationWaiting == null)
                 {
-                    _context.Relations.Remove(item);
+                    throw new ArgumentException("Relation does not exist");
                 }
+                _context.Relations.Remove(relationRequest[0]);
+                _context.Relations.Remove(relationWaiting[0]);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception("An error occurred while deleting relation", ex);
             }
-        } 
+        }
+        public async Task DeleteBlockByUserId(string UserId, string UserTargetId)
+        {
+            try
+            {
+                var relationtoDelete = await _context.Relations.Where(x => x.UserId == UserId && x.UserTargetIduserId == UserTargetId && x.TypeRelation == "BLOCK").ToListAsync();
+                if (relationtoDelete == null)
+                {
+                    throw new ArgumentException("Relation not exist");
+                }
+                _context.Relations.Remove(relationtoDelete[0]);
+                await _context.SaveChangesAsync();  
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while deleteing relation", ex);
+            }
+        }
+
+        public async Task DeleteFollowByUserId(string UserId, string UserTargetId)
+        {
+            try
+            {
+                var relationtoDelete = await _context.Relations.Where(x => x.UserId == UserId && x.UserTargetIduserId == UserTargetId && x.TypeRelation == "FOLLOW").ToListAsync();
+                if (relationtoDelete == null)
+                {
+                    throw new ArgumentException("Relation not exist");
+                }
+                _context.Relations.Remove(relationtoDelete[0]);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while deleteing relation", ex);
+            }
+        }
         public Task<Relation> GetByIdAsync(string key)
         {
             throw new NotImplementedException();
