@@ -81,7 +81,7 @@ namespace Web_Social_network_BE.Controllers
         }
 
         [HttpGet("{id_post}")]
-        public async Task<IActionResult> GetAllPostById(string id_post)
+        public async Task<IActionResult> GetPostById(string id_post)
         {
             try
             {
@@ -99,8 +99,8 @@ namespace Web_Social_network_BE.Controllers
 
         }
 
-        [HttpGet("v1/api/posts/users/{id_user}")]
-        public async Task<IActionResult> GetAllPostByUser(string id_user)
+        [HttpGet("users/{id_user}")]
+        public async Task<IActionResult> GetAllPostByUserId(string id_user)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace Web_Social_network_BE.Controllers
             }
         }
 
-        [HttpGet("v1/api/posts/{id_post}/likes/users")]
+        [HttpGet("{id_post}/likes/users")]
         public async Task<IActionResult> GetAllUsersLikePost(string id_post)
         {
             try
