@@ -46,6 +46,7 @@ namespace Web_Social_network_BE
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IRelationRepository, RelationRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IRequestCodeRepository, RequestCodeRepository>();
 
             // ------------------------------------------------------------//
 
