@@ -176,9 +176,7 @@ public partial class SocialNetworkN01Context : DbContext
         modelBuilder.Entity<Request>(entity =>
         {
             entity.HasKey(e => e.RegisterId).HasName("PK__requests__1418262F5D5CCE9E");
-
             entity.ToTable("requests");
-
             entity.Property(e => e.RegisterId).HasColumnName("register_id");
             entity.Property(e => e.CodeType)
                 .HasMaxLength(30)

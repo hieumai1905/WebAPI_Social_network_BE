@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Web_Social_network_BE.Models;
+using Web_Social_network_BE.RequestModel;
 
 namespace Web_Social_network_BE.Repositories.UserRepository
 {
@@ -104,12 +105,11 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             return userInfo;
         }
 
-        public async Task<User> GetByEmail(string email)
+        public async Task<User?> GetByEmail(string email)
         {
             try
             {
-                return await _context.Users.FirstOrDefaultAsync(u => u.UserInfo.Email == email) ??
-                       throw new InvalidOperationException();
+                return await _context.Users.FirstOrDefaultAsync(u => u.UserInfo.Email == email);
             }
             catch (Exception ex)
             {
@@ -127,6 +127,50 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred while getting user by phone {phone}.", ex);
+            }
+        }
+
+        public async Task<User> GetInformationUser(string idUser)
+        {
+            try
+            {
+                User user =
+                    await _context.Users.Include(u => u.UserInfo).FirstOrDefaultAsync(u => u.UserId == idUser) ??
+                    throw new InvalidOperationException();
+                if (user == null)
+                {
+                    throw new Exception($"User with id {idUser} not found");
+                }
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while getting user information by id {idUser}.", ex);
+            }
+        }
+
+        public async Task<User> Login(LoginModel account)
+        {
+            try
+            {
+                var user = await _context.Users.Include(u => u.UserInfo)
+                    .FirstOrDefaultAsync(u => u.UserInfo.Email == account.Email);
+                if (user == null)
+                {
+                    throw new ArgumentException($"User with email {account.Email} not found");
+                }
+
+                if (user.UserInfo.Password != account.Password)
+                {
+                    throw new ArgumentException($"Password is incorrect");
+                }
+
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while logging in user with email {account.Email}.", ex);
             }
         }
     }

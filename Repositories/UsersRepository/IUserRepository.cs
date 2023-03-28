@@ -1,4 +1,5 @@
 ﻿using Web_Social_network_BE.Models;
+using Web_Social_network_BE.RequestModel;
 
 namespace Web_Social_network_BE.Repositories.UserRepository
 {
@@ -7,5 +8,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
         Task<UsersInfo> GetUserInfoAsync(string userInfoId);
         Task<User> GetByEmail(string email);
         Task<User> GetByPhone(string phone);
+        Task<User> GetInformationUser(string idUser);
+        Task<User> Login(LoginModel account);
     }
 }

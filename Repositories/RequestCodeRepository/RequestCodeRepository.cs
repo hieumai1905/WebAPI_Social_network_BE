@@ -112,4 +112,16 @@ public class RequestCodeRepository : IRequestCodeRepository
             throw new Exception("An error occurred while cleaning request code.", ex);
         }
     }
+
+    public async Task<int> GetCountRequest()
+    {
+        try
+        {
+            return await _context.Requests.CountAsync();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An error occurred while getting count request code.", ex);
+        }
+    }
 }
