@@ -21,6 +21,22 @@ namespace Web_Social_network_BE
             // ------------------------------------------------------------//
 
 
+            // ----------------------register cors-----------------------------//
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyHeader()
+                               .AllowAnyMethod();
+                    });
+            });
+
+            // ------------------------------------------------------------//
+
+
             // ----------------------add scope-----------------------------//
 
             builder.Services.AddDbContext<SocialNetworkN01Context>();
@@ -49,6 +65,7 @@ namespace Web_Social_network_BE
 
             app.UseAuthorization();
 
+            app.UseCors("AllowAllOrigins");
 
             app.MapControllers();
 
