@@ -11,6 +11,11 @@ namespace Web_Social_network_BE.Repositories.RelationRepository
         Task<IEnumerable> GetFollowByUserId(string key);
         Task<IEnumerable> GetWaitingUserById(string key);
         Task<IEnumerable> GetRequestByUserId(string key);
-        Task DeleteFriendByUserId(String UserId, String UserTargetId);
+        Relation GetRequestByUserIdAndUserTargetId(string UserId, string UserTargetId);
+        Relation GetWaitingByUserIdAndUserTargetId(string UserId, string UserTargetId);
+        Task RejectFriendRequestByUserId(string UserId, string UserTargetId);
+        Task DeleteFriendByUserId(string UserId, string UserTargetId);
+        Task DeleteBlockByUserId(string UserId, string UserTargetId); 
+        Task DeleteFollowByUserId (string UserId, string UserTargetId);
     }
 }
