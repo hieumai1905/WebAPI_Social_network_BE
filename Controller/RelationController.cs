@@ -25,7 +25,21 @@ namespace Web_Social_network_BE.Controller
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while getting all users: {ex.Message}");
+                return StatusCode(500, $"An error occurred while getting all relation: {ex.Message}");
+            }
+        }
+        //Lấy ra mối quan hệ của 2 user với nhau
+        [HttpGet("{UserId}/relation/{UserTargetId}")]
+        public async Task<IActionResult> GetRelationByUserIdAndUserTargetId(string UserId,string UserTargetId)
+        {
+            try
+            {
+                var relation = await _relationRepository.GetRelationByUserIdAndUserTargetId(UserId, UserTargetId);
+                return Ok(relation);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while getting relation between 2 user: {ex.Message}");
             }
         }
         // Lấy ra toàn bộ mối quan hệ friend của user có id = UserId
