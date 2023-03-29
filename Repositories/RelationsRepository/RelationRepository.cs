@@ -24,6 +24,17 @@ namespace Web_Social_network_BE.Repositories.RelationRepository
                 throw new Exception("An error occurred while getting all relation for user.", ex); 
             }
         }
+        public async Task<IEnumerable> GetRelationByUserIdAndUserTargetId(string UserId, string UserTargetId)
+        {
+            try
+            {
+                return await _context.Relations.Where(x => x.UserId == UserId && x.UserTargetIduserId==UserTargetId).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("an error occurred while getting all relation friend for user by id", ex);
+            }
+        }
         public async Task<IEnumerable> GetFriendByUserId(string key)
         {
             try
