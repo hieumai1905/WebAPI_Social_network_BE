@@ -107,7 +107,7 @@ namespace Web_Social_network_BE.Controller
             if (id != user.UserId)
             {
                 return BadRequest();
-            }
+            } 
 
             try
             {

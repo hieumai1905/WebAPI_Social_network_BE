@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Web_Social_network_BE.Models;
 using Web_Social_network_BE.Repositories.UserRepository;
 using Web_Social_network_BE.RequestModel;
+using Web_Social_network_BE.Sockets.SendMails;
 
 namespace Web_Social_network_BE.Controller
 {
@@ -77,6 +78,16 @@ namespace Web_Social_network_BE.Controller
                     RequestCode = requestCode,
                     Email = account.Email
                 };
+                try
+                {
+                    Mail.SendMail(account.Email, "Confirm code!", requestCode.ToString(),
+                        account.Email);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"An error occurred while sending the email: {ex.Message}");
+                }
+
                 var requestToAdd = await _requestCodeRepository.AddAsync(request);
                 return Ok(userToAdd);
             }
