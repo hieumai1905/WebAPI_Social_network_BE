@@ -52,7 +52,7 @@ public class Mail
 
         using (var stream = new FileStream(CREDENTIALS_PATH, FileMode.Open, FileAccess.Read))
         {
-            string credPath = "token.json";
+            string credPath = "bin/Debug/net6.0/token.json";
             credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
                 GoogleClientSecrets.Load(stream).Secrets,
                 new[] { GmailService.Scope.GmailSend },
