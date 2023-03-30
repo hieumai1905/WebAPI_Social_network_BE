@@ -96,5 +96,57 @@ namespace Web_Social_network_BE.Controller
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpPost("register/confirm-code")]
+        public async Task<ActionResult> ConfirmCode([FromQuery] string code, [FromBody] LoginModel account)
+        {
+            try
+            {
+                User user = null;
+                try
+                {
+                    user = await _userRepository.Login(account);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest("Don't exist user with this email");
+                }
+
+
+                if (user.UserInfo.Status == "ACTIVE")
+                {
+                    return BadRequest("User is already active");
+                }
+
+                var request = await _requestCodeRepository.GetByEmail(account.Email);
+                if (request == null)
+                {
+                    return BadRequest("Don't exist request with this email");
+                }
+
+                if (request.RequestCode.ToString() != code)
+                {
+                    return BadRequest("Code is incorrect");
+                }
+                
+                if(request.CodeType != "REGISTER")
+                {
+                    return BadRequest("Code is incorrect");
+                }
+
+                if (request.RegisterAt.AddMinutes(5) < DateTime.Now)
+                {
+                    return BadRequest("Code is expired");
+                }
+
+                user.UserInfo.Status = "ACTIVE";
+                await _userRepository.UpdateAsync(user);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

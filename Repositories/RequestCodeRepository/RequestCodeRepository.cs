@@ -86,12 +86,11 @@ public class RequestCodeRepository : IRequestCodeRepository
         }
     }
 
-    public async Task<Request> GetByEmail(string email)
+    public async Task<Request?> GetByEmail(string email)
     {
         try
         {
-            return await _context.Requests.FirstOrDefaultAsync(u => u.Email == email) ??
-                   throw new InvalidOperationException();
+            return await _context.Requests.FirstOrDefaultAsync(u => u.Email == email);
         }
         catch (Exception ex)
         {
