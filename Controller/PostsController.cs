@@ -38,7 +38,9 @@ namespace Web_Social_network_BE.Controllers
             try
             {
                 string postId = Guid.NewGuid().ToString();
+                DateTime createAt = DateTime.Now;
                 post.PostId = postId;
+                post.CreateAt = createAt;
                 var newPost = await _postRepository.AddAsync(post);
                 return Ok(newPost);
             }
