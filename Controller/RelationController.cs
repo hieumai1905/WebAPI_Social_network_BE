@@ -15,7 +15,7 @@ namespace Web_Social_network_BE.Controller
         {
             _relationRepository = relationRepository;
         }
-        [HttpGet]
+        [HttpGet("relation")]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -113,28 +113,41 @@ namespace Web_Social_network_BE.Controller
         {
             try
             {
-                if (_relationRepository.CheckFriendRelation(userId,userTargetId)==false)
+                if (_relationRepository.CheckWaitingRelation(userTargetId, userId)==false && _relationRepository.CheckWaitingRelation(userId, userTargetId) == false)
                 {
-                    if (_relationRepository.CheckBlockRelation(userId,userTargetId)==true)
+                    if (_relationRepository.CheckFriendRelation(userId, userTargetId) == false)
                     {
-                        return StatusCode(500, $"An error occurred while sending friend request, unblock after send friend request");
+                        if (_relationRepository.CheckBlockRelation(userId, userTargetId) == true)
+                        {
+                            return StatusCode(500, $"An error occurred while sending friend request, unblock after send friend request");
+                        }
+                        Relation relationUserRequest = new Relation();
+                        Relation relationUserWaiting = new Relation();
+                        //Relation relationFollow = new Relation();
+                        relationUserRequest.RelationId = Guid.NewGuid().ToString();
+                        relationUserRequest.TypeRelation = "REQUEST";
+                        relationUserRequest.UserId = userId;
+                        relationUserRequest.UserTargetIduserId = userTargetId;
+                        relationUserWaiting.RelationId = Guid.NewGuid().ToString();
+                        relationUserWaiting.TypeRelation = "WAITING";
+                        relationUserWaiting.UserId = userTargetId;
+                        relationUserWaiting.UserTargetIduserId = userId;
+                        //relationFollow.RelationId = Guid.NewGuid().ToString();
+                        //relationFollow.TypeRelation = "FOLLOW";
+                        //relationFollow.UserId = userId;
+                        //relationFollow.UserTargetIduserId = userTargetId;
+                        await _relationRepository.AddAsync(relationUserRequest);
+                        await _relationRepository.AddAsync(relationUserWaiting);
+                        //await _relationRepository.AddAsync(relationFollow);
+                        return Ok();
                     }
-                    Relation relationUserRequest = new Relation();
-                    Relation relationUserWaiting = new Relation();
-                    relationUserRequest.RelationId = Guid.NewGuid().ToString();
-                    relationUserRequest.TypeRelation = "REQUEST";
-                    relationUserRequest.UserId = userId;
-                    relationUserRequest.UserTargetIduserId = userTargetId;
-                    relationUserWaiting.RelationId = Guid.NewGuid().ToString();
-                    relationUserWaiting.TypeRelation = "WAITING";
-                    relationUserWaiting.UserId = userTargetId;
-                    relationUserWaiting.UserTargetIduserId = userId;
-                    await _relationRepository.AddAsync(relationUserRequest);
-                    await _relationRepository.AddAsync(relationUserWaiting);
-                    return Ok();
+                    else
+                        return StatusCode(500, $"An error occurred while sending friend request");
                 }
                 else
-                    return StatusCode(500, $"An error occurred while sending friend request");
+                {
+                    return StatusCode(500, $"Friend request is exist");
+                }
             }
             catch (Exception ex)
             {
@@ -147,7 +160,7 @@ namespace Web_Social_network_BE.Controller
         {
             try
             {
-                if (_relationRepository.CheckBlockRelation(userId,userTargetId) == false)
+                if (_relationRepository.CheckBlockRelation(userId, userTargetId) == false)
                 {
                     if (_relationRepository.CheckFriendRelation(userId, userTargetId) == true)
                     {
@@ -179,40 +192,54 @@ namespace Web_Social_network_BE.Controller
         {
             try
             {
-                if (_relationRepository.CheckFollowRelation(userId, userTargetId) == false)
+                if (_relationRepository.CheckFollowRelation(userId,userTargetId)==false)
                 {
-                    if (_relationRepository.CheckBlockRelation(userId, userTargetId) == true)
+                    if (_relationRepository.CheckFollowRelation(userId, userTargetId) == false)
                     {
-                        return StatusCode(500, $"An error occurred while sending friend request, unblock after follow");
+                        if (_relationRepository.CheckBlockRelation(userId, userTargetId) == true)
+                        {
+                            return StatusCode(500, $"An error occurred while sending friend request, unblock after follow");
+                        }
+                        Relation relationFollow = new Relation();
+                        relationFollow.RelationId = Guid.NewGuid().ToString();
+                        relationFollow.TypeRelation = "FOLLOW";
+                        relationFollow.UserId = userId;
+                        relationFollow.UserTargetIduserId = userTargetId;
+                        await _relationRepository.AddAsync(relationFollow);
+                        return Ok();
                     }
-                    Relation relationFollow = new Relation();
-                    relationFollow.RelationId = Guid.NewGuid().ToString();
-                    relationFollow.TypeRelation = "FOLLOW";
-                    relationFollow.UserId = userId;
-                    relationFollow.UserTargetIduserId = userTargetId;
-                    await _relationRepository.AddAsync(relationFollow);
-                    return Ok();
+                    else
+                        return StatusCode(500, $"An error occurred while follow");
                 }
                 else
-                    return StatusCode(500, $"An error occurred while follow");
+                {
+                    return StatusCode(500, $"Relation follow is exist");
+                }
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred while follow : {ex.Message}");
             }
         }
-        //User có id = UserTargetId chấp nhận lời mời kết bạn của user có id = UserId
+        //User có id = userId chấp nhận lời mời kết bạn của user có id = userTargetId
         [HttpPut("{userId}/friend-request/{userTargetId}/accept")]
         public async Task<IActionResult> AcceptFriendRequest (string userId, string userTargetId)
         {
             try
             {
-                var relationRequest = _relationRepository.GetRequestByUserIdAndUserTargetId(userId, userTargetId);
+                var relationRequest = _relationRepository.GetRequestByUserIdAndUserTargetId(userTargetId, userId);
                 var relationWaiting = _relationRepository.GetWaitingByUserIdAndUserTargetId(userId, userTargetId);
                 relationRequest.TypeRelation = "FRIEND";
                 relationWaiting.TypeRelation = "FRIEND";
                 await _relationRepository.UpdateAsync(relationRequest);
                 await _relationRepository.UpdateAsync(relationWaiting);
+                Relation relationFollow = new Relation();
+                relationFollow.RelationId = Guid.NewGuid().ToString();
+                relationFollow.TypeRelation = "FOLLOW";
+                relationFollow.UserId = userId;
+                relationFollow.UserTargetIduserId = userTargetId;
+                await _relationRepository.AddAsync(relationFollow);
+
                 return Ok();
             }
             catch (Exception ex)
@@ -238,7 +265,7 @@ namespace Web_Social_network_BE.Controller
                 return StatusCode(500, $"An error occurred while unfriend relation with id : {ex.Message}");
             }
         }
-        // User có id = UserTargetId từ chối lời mời kết bạn của user có id = UserId
+        // User có id = userId từ chối lời mời kết bạn của user có id = userTargetId
         [HttpDelete("{userId}/friend-requests/{userTargetId}/reject")]
         public async Task<IActionResult> Reject(string userId, string userTargetId)
         {
@@ -290,6 +317,23 @@ namespace Web_Social_network_BE.Controller
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred while unblock with id : {ex.Message}");
+            }
+        }
+        [HttpDelete("{userId}/friend-requests/{userTargetId}/cancle")]
+        public async Task<IActionResult> CancleFriendRequest(string userId,string userTargetId)
+        {
+            try
+            {
+                await _relationRepository.DeleteRequestAndWaitingByUserId(userId, userTargetId);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while unfollow with id : {ex.Message}");
             }
         }
     }
