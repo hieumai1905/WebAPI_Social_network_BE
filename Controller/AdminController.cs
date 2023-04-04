@@ -39,11 +39,6 @@ public class AdminController : ControllerBase
         try
         {
             var userToAdd = await _userRepository.Register(account);
-            if (userToAdd == null)
-            {
-                throw new Exception("An error occurred while registering");
-            }
-
             userToAdd.UserInfo.UserRole = "ADMIN_ROLE";
             userToAdd.UserInfo.Status = "ACTIVE";
             await _userRepository.UpdateAsync(userToAdd);

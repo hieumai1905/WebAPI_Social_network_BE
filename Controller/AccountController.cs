@@ -68,10 +68,6 @@ namespace Web_Social_network_BE.Controller
             try
             {
                 var userToAdd = await _userRepository.Register(account);
-                if (userToAdd == null)
-                {
-                    throw new Exception("An error occurred while registering");
-                }
 
                 var requestCode = new Random().Next(100000, 999999);
                 var request = new Request
