@@ -42,7 +42,6 @@ namespace Web_Social_network_BE.Controller
             try
             {
                 var user = await _userRepository.GetInformationUser(id);
-                user.UserInfo.Password = null;
                 return Ok(user);
             }
             catch (Exception ex)
@@ -67,10 +66,13 @@ namespace Web_Social_network_BE.Controller
                 if (user == null || changePassword.OldPassword == "" ||
                     user.UserInfo.Password != MD5Hash.GetHashString(changePassword.OldPassword))
                 {
-                    return BadRequest();
+                    return BadRequest("Old password is incorrect");
                 }
 
-                user.UserInfo.Password = changePassword.NewPassword;
+                if (changePassword.NewPassword == "" || changePassword.NewPassword.Length < 6)
+                    return BadRequest("Password must be at least 6 characters long");
+
+                user.UserInfo.Password = MD5Hash.GetHashString(changePassword.NewPassword);
                 await _userRepository.UpdateAsync(user);
                 return Ok(user);
             }
@@ -91,7 +93,7 @@ namespace Web_Social_network_BE.Controller
 
             if (id != user.UserId)
             {
-                return BadRequest();
+                return BadRequest("Id is not match");
             }
 
             try

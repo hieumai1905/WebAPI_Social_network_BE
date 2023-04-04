@@ -22,7 +22,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while getting all users.", ex);
+                throw new Exception($"An error occurred while getting all users.{ex}");
             }
         }
 
@@ -34,7 +34,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while getting user with id {key}.", ex);
+                throw new Exception($"An error occurred while getting user with id {key}.{ex}");
             }
         }
 
@@ -48,7 +48,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while adding user {entity.UserId}.", ex);
+                throw new Exception($"An error occurred while adding user {entity.UserId}.{ex}");
             }
         }
 
@@ -69,7 +69,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while updating user with id {entity.UserId}.", ex);
+                throw new Exception($"An error occurred while updating user with id {entity.UserId}.{ex}");
             }
         }
 
@@ -92,7 +92,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while deleting user with id {key}.", ex);
+                throw new Exception($"An error occurred while deleting user with id {key}.{ex}");
             }
         }
 
@@ -117,7 +117,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while getting user by email {email}.", ex);
+                throw new Exception($"An error occurred while getting user by email {email}.{ex}");
             }
         }
 
@@ -130,7 +130,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while getting user by phone {phone}.", ex);
+                throw new Exception($"An error occurred while getting user by phone {phone}.{ex}");
             }
         }
 
@@ -150,7 +150,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while getting user information by id {idUser}.", ex);
+                throw new Exception($"An error occurred while getting user information by id {idUser}.{ex}");
             }
         }
 
@@ -174,7 +174,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while logging in user with email {account.Email}.", ex);
+                throw new Exception($"An error occurred while logging in user with email {account.Email}.{ex}");
             }
         }
 
@@ -215,7 +215,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
             catch (Exception ex)
             {
-                throw new Exception($"An error occurred while register user", ex);
+                throw new Exception($"An error occurred while register user.{ex}");
             }
         }
     }
