@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Web_Social_network_BE.Handle;
 using Web_Social_network_BE.Models;
 using Web_Social_network_BE.RequestModel;
 
@@ -83,7 +84,10 @@ namespace Web_Social_network_BE.Repositories.UserRepository
                     throw new ArgumentException($"User with id {key} does not exist");
                 }
 
+                var userInfoId = userToDelete.UserInfoId;
                 _context.Users.Remove(userToDelete);
+                var UserInfo = await _context.UsersInfos.FindAsync(userInfoId);
+                _context.UsersInfos.Remove(UserInfo);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -161,7 +165,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
                     throw new ArgumentException($"User with email {account.Email} not found");
                 }
 
-                if (user.UserInfo.Password != account.Password)
+                if (user.UserInfo.Password != MD5Hash.GetHashString(account.Password))
                 {
                     throw new ArgumentException($"Password is incorrect");
                 }
@@ -171,6 +175,47 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             catch (Exception ex)
             {
                 throw new Exception($"An error occurred while logging in user with email {account.Email}.", ex);
+            }
+        }
+
+        public async Task<User> Register(RegisterModel account)
+        {
+            try
+            {
+                var user = await _context.Users.Include(u => u.UserInfo)
+                    .FirstOrDefaultAsync(u => u.UserInfo.Email == account.Email);
+                if (user != null)
+                {
+                    throw new ArgumentException($"User with email {account.Email} already exists");
+                }
+
+                var userInfoId = Guid.NewGuid().ToString();
+                user = new User()
+                {
+                    UserId = Guid.NewGuid().ToString(),
+                    FullName = account.Name,
+                    Avatar = null,
+                    UserInfoId = userInfoId,
+                    UserInfo = new UsersInfo()
+                    {
+                        UserInfoId = userInfoId,
+                        Password = MD5Hash.GetHashString(account.Password),
+                        Email = account.Email,
+                        Dob = null,
+                        Address = null,
+                        Status = "INACTIVE",
+                        UserRole = "USER_ROLE",
+                        AboutMe = "",
+                        CoverImage = ""
+                    }
+                };
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while register user", ex);
             }
         }
     }

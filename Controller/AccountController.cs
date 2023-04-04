@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Web_Social_network_BE.Handle;
 using Web_Social_network_BE.Models;
 using Web_Social_network_BE.Repositories.UserRepository;
 using Web_Social_network_BE.RequestModel;
@@ -12,12 +13,18 @@ namespace Web_Social_network_BE.Controller
     {
         private readonly IRequestCodeRepository _requestCodeRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ISession _session;
 
-        public AccountController(IRequestCodeRepository requestCodeRepository, IUserRepository userRepository)
+        public AccountController(IRequestCodeRepository requestCodeRepository, IUserRepository userRepository,
+            IHttpContextAccessor httpContextAccessor)
         {
             _requestCodeRepository = requestCodeRepository;
             _userRepository = userRepository;
+            _httpContextAccessor = httpContextAccessor;
+            _session = _httpContextAccessor.HttpContext.Session;
         }
+
 
         [HttpPost("login")]
         public async Task<ActionResult> Login([FromBody] LoginModel account)
@@ -27,10 +34,27 @@ namespace Web_Social_network_BE.Controller
                 var user = await _userRepository.Login(account);
                 if (user != null)
                 {
+                    _session.SetString("UserId", user.UserId);
+                    _session.SetString("UserRole", user.UserInfo.UserRole);
+                    _session.SetString("UserStatus", user.UserInfo.Status);
                     return Ok(user);
                 }
 
                 return BadRequest("Email or password is incorrect");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("logout")]
+        public async Task<ActionResult> Logout()
+        {
+            try
+            {
+                _session.Remove("UserId");
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -43,33 +67,12 @@ namespace Web_Social_network_BE.Controller
         {
             try
             {
-                var user = await _userRepository.GetByEmail(account.Email);
-                if (user != null)
+                var userToAdd = await _userRepository.Register(account);
+                if (userToAdd == null)
                 {
-                    return BadRequest("Email is already in use");
+                    throw new Exception("An error occurred while registering");
                 }
 
-                var userInfoId = Guid.NewGuid().ToString();
-                var newUser = new User
-                {
-                    UserId = Guid.NewGuid().ToString(),
-                    FullName = account.name,
-                    Avatar = null,
-                    UserInfoId = userInfoId,
-                    UserInfo = new UsersInfo()
-                    {
-                        UserInfoId = userInfoId,
-                        Password = account.Password,
-                        Email = account.Email,
-                        Dob = null,
-                        Address = null,
-                        Status = "INACTIVE",
-                        UserRole = "USER_ROLE",
-                        AboutMe = "",
-                        CoverImage = null
-                    }
-                };
-                var userToAdd = await _userRepository.AddAsync(newUser);
                 var requestCode = new Random().Next(100000, 999999);
                 var request = new Request
                 {
@@ -78,6 +81,18 @@ namespace Web_Social_network_BE.Controller
                     RequestCode = requestCode,
                     Email = account.Email
                 };
+
+                try
+                {
+                    await _requestCodeRepository.CleanRequestCode();
+                    var requestToAdd = await _requestCodeRepository.AddAsync(request);
+                }
+                catch (Exception ex)
+                {
+                    _userRepository.DeleteAsync(userToAdd.UserId);
+                    throw new Exception($"An error occurred while adding the request: {ex.Message}");
+                }
+
                 try
                 {
                     Mail.SendMail(account.Email, "Confirm code!", requestCode.ToString(),
@@ -85,10 +100,11 @@ namespace Web_Social_network_BE.Controller
                 }
                 catch (Exception ex)
                 {
+                    _userRepository.DeleteAsync(userToAdd.UserId);
+                    _requestCodeRepository.DeleteAsync(request.RegisterId);
                     throw new Exception($"An error occurred while sending the email: {ex.Message}");
                 }
 
-                var requestToAdd = await _requestCodeRepository.AddAsync(request);
                 return Ok(userToAdd);
             }
             catch (Exception ex)
@@ -119,10 +135,6 @@ namespace Web_Social_network_BE.Controller
                 }
 
                 var request = await _requestCodeRepository.GetByEmail(account.Email);
-                if (request == null)
-                {
-                    return BadRequest("Don't exist request with this email");
-                }
 
                 if (request.RequestCode.ToString() != code)
                 {
@@ -141,6 +153,7 @@ namespace Web_Social_network_BE.Controller
 
                 user.UserInfo.Status = "ACTIVE";
                 await _userRepository.UpdateAsync(user);
+                await _requestCodeRepository.DeleteAsync(request.RegisterId);
                 return Ok(user);
             }
             catch (Exception ex)

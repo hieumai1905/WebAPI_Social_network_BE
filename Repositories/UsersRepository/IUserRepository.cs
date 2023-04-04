@@ -10,5 +10,6 @@ namespace Web_Social_network_BE.Repositories.UserRepository
         Task<User> GetByPhone(string phone);
         Task<User> GetInformationUser(string idUser);
         Task<User> Login(LoginModel account);
+        Task<User> Register(RegisterModel account);
     }
 }

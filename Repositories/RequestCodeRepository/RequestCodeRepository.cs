@@ -20,7 +20,7 @@ public class RequestCodeRepository : IRequestCodeRepository
         }
         catch (Exception ex)
         {
-            throw new Exception("An error occurred while getting all requests code.", ex);
+            throw new Exception($"An error occurred while getting all requests code.{ex.Message}");
         }
     }
 
@@ -32,7 +32,7 @@ public class RequestCodeRepository : IRequestCodeRepository
         }
         catch (Exception ex)
         {
-            throw new Exception($"An error occurred while getting request code with id {key}.", ex);
+            throw new Exception($"An error occurred while getting request code with id {key}.{ex.Message}");
         }
     }
 
@@ -46,7 +46,7 @@ public class RequestCodeRepository : IRequestCodeRepository
         }
         catch (Exception ex)
         {
-            throw new Exception($"An error occurred while adding user {entity.RegisterId}.", ex);
+            throw new Exception($"An error occurred while adding user {entity.RegisterId}.{ex.Message}");
         }
     }
 
@@ -63,7 +63,8 @@ public class RequestCodeRepository : IRequestCodeRepository
         }
         catch (Exception ex)
         {
-            throw new Exception($"An error occurred while updating request code with id {entity.RegisterId}.", ex);
+            throw new Exception(
+                $"An error occurred while updating request code with id {entity.RegisterId}.{ex.Message}");
         }
     }
 
@@ -82,7 +83,7 @@ public class RequestCodeRepository : IRequestCodeRepository
         }
         catch (Exception ex)
         {
-            throw new Exception($"An error occurred while deleting request with id {key}.", ex);
+            throw new Exception($"An error occurred while deleting request with id {key}. {ex.Message}");
         }
     }
 
@@ -90,11 +91,14 @@ public class RequestCodeRepository : IRequestCodeRepository
     {
         try
         {
-            return await _context.Requests.FirstOrDefaultAsync(u => u.Email == email);
+            var request = await _context.Requests.FirstOrDefaultAsync(u => u.Email == email);
+            if (request == null)
+                throw new ArgumentException($"Request with email {email} does not exist");
+            return request;
         }
         catch (Exception ex)
         {
-            throw new Exception($"An error occurred while getting Requests by email {email}.", ex);
+            throw new Exception($"An error occurred while getting Requests by email {email}. {ex.Message}");
         }
     }
 
@@ -108,7 +112,7 @@ public class RequestCodeRepository : IRequestCodeRepository
         }
         catch (Exception ex)
         {
-            throw new Exception("An error occurred while cleaning request code.", ex);
+            throw new Exception($"An error occurred while cleaning request code.{ex.Message}");
         }
     }
 
@@ -120,7 +124,29 @@ public class RequestCodeRepository : IRequestCodeRepository
         }
         catch (Exception ex)
         {
-            throw new Exception("An error occurred while getting count request code.", ex);
+            throw new Exception($"An error occurred while getting count request code.{ex.Message}");
+        }
+    }
+
+    public async Task<Request> RefreshCode(string email)
+    {
+        try
+        {
+            var requestSend = _context.Requests.FirstOrDefault(x => x.Email == email);
+            if (requestSend == null)
+            {
+                throw new Exception("Request not found");
+            }
+
+            requestSend.RegisterAt = DateTime.Now;
+            requestSend.RequestCode = new Random().Next(100000, 999999);
+            _context.Requests.Update(requestSend);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+            return requestSend;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"An error occurred while refreshing request code.{ex.Message}");
         }
     }
 }

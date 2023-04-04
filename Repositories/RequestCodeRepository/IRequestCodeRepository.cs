@@ -7,5 +7,6 @@ namespace Web_Social_network_BE.Repositories.UserRepository
         public Task<Request> GetByEmail(string email);
         public Task CleanRequestCode();
         public Task<int> GetCountRequest();
+        Task<Request> RefreshCode(string email);
     }
 }
