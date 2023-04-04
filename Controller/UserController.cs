@@ -65,7 +65,7 @@ namespace Web_Social_network_BE.Controller
 
                 var user = await _userRepository.GetInformationUser(id);
                 if (user == null || changePassword.OldPassword == "" ||
-                    user.UserInfo.Password != changePassword.OldPassword)
+                    user.UserInfo.Password != MD5Hash.GetHashString(changePassword.OldPassword))
                 {
                     return BadRequest();
                 }
