@@ -15,11 +15,14 @@ namespace Web_Social_network_BE.Repositories.RelationRepository
         Relation GetRequestByUserIdAndUserTargetId(string userId, string userTargetId);
         Relation GetWaitingByUserIdAndUserTargetId(string userId, string userTargetId);
         bool CheckFriendRelation(string userId, string userTargetId);
+        bool CheckRequestRelation(string userId, string userTargetId);
+        bool CheckWaitingRelation(string userId, string userTargetId);
         bool CheckFollowRelation(string userId, string userTargetId);
         bool CheckBlockRelation(string userId, string userTargetId);
         Task RejectFriendRequestByUserId(string userId, string userTargetId);
         Task DeleteFriendByUserId(string userId, string userTargetId);
         Task DeleteBlockByUserId(string userId, string userTargetId); 
         Task DeleteFollowByUserId (string userId, string userTargetId);
+        Task DeleteRequestAndWaitingByUserId (string userId, string userTargetId);
     }
 }
