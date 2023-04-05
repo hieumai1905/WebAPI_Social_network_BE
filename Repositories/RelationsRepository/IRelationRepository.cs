@@ -3,7 +3,7 @@ using System.Collections;
 using Web_Social_network_BE.Repositories;
 namespace Web_Social_network_BE.Repositories.RelationRepository
 {
-    public interface IRelationRepository : IGeneralRepository<Relation,String>
+    public interface IRelationRepository : IGeneralRepository<Relation, String>
     {
         Task<IEnumerable> GetAllRelationByUserId(string key);
         Task<IEnumerable> GetFriendByUserId(string key);
@@ -21,8 +21,8 @@ namespace Web_Social_network_BE.Repositories.RelationRepository
         bool CheckBlockRelation(string userId, string userTargetId);
         Task RejectFriendRequestByUserId(string userId, string userTargetId);
         Task DeleteFriendByUserId(string userId, string userTargetId);
-        Task DeleteBlockByUserId(string userId, string userTargetId); 
-        Task DeleteFollowByUserId (string userId, string userTargetId);
-        Task DeleteRequestAndWaitingByUserId (string userId, string userTargetId);
+        Task DeleteBlockByUserId(string userId, string userTargetId);
+        Task DeleteFollowByUserId(string userId, string userTargetId);
+        Task DeleteRequestAndWaitingByUserId(string userId, string userTargetId);
     }
 }
