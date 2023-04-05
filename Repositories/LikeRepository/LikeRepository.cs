@@ -13,7 +13,7 @@ namespace Web_Social_network_BE.Repositories.LikeRepository
             _context = context;
         }
 
-        public async Task<Post> AddLikeByPostIdAsync(string postId, Like entity)
+        public async Task<Like> AddLikeByPostIdAsync(string postId, Like entity)
         {
            
                 var postToLike = await _context.Posts
@@ -26,7 +26,7 @@ namespace Web_Social_network_BE.Repositories.LikeRepository
                 _context.Likes.Add(entity);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 
-                return postToLike;
+                return entity;
         }
         public async Task<Like> DeleteLikeByPostIdAsync(string postId, long likeId)
         {
@@ -48,7 +48,7 @@ namespace Web_Social_network_BE.Repositories.LikeRepository
 
             return postToUnLike;
         }
-        public async Task<Comment> AddLikeByCommentIdAsync(long commentId, Like entity)
+        public async Task<Like> AddLikeByCommentIdAsync(long commentId, Like entity)
         {
             var commentToLike = await _context.Comments
                 .FirstOrDefaultAsync(u => u.CommentId == commentId).ConfigureAwait(false);
@@ -60,7 +60,7 @@ namespace Web_Social_network_BE.Repositories.LikeRepository
             _context.Likes.Add(entity);
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
-            return commentToLike;
+            return entity;
         }
 
         public async Task<Like> DeleteLikeByCommentIdAsync(long commentId, long likeId)
