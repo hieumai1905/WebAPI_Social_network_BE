@@ -43,9 +43,10 @@ namespace Web_Social_network_BE
                 options.AddPolicy("AllowAllOrigins",
                     builder =>
                     {
-                        builder.AllowAnyOrigin()
+                        builder.WithOrigins("https://localhost:7261")
                             .AllowAnyHeader()
-                            .AllowAnyMethod();
+                            .AllowAnyMethod()
+                            .AllowCredentials();
                     });
             });
 
@@ -81,12 +82,13 @@ namespace Web_Social_network_BE
 
             app.UseSession();
 
+            app.UseCors("AllowAllOrigins");
+
             app.UseMiddleware<Authentication>();
+
             app.UseMiddleware<Authorization>();
 
             app.UseAuthorization();
-
-            app.UseCors("AllowAllOrigins");
 
             app.MapControllers();
 

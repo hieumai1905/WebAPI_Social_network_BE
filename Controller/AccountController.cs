@@ -37,6 +37,9 @@ namespace Web_Social_network_BE.Controller
                     _session.SetString("UserId", user.UserId);
                     _session.SetString("UserRole", user.UserInfo.UserRole);
                     _session.SetString("UserStatus", user.UserInfo.Status);
+                    Response.Cookies.Append("UserId", user.UserId);
+                    Response.Cookies.Append("UserRole", user.UserInfo.UserRole);
+                    Response.Cookies.Append("UserStatus", user.UserInfo.Status);
                     return Ok(user);
                 }
 
@@ -47,6 +50,7 @@ namespace Web_Social_network_BE.Controller
                 return StatusCode(500, ex.Message);
             }
         }
+
 
         [HttpGet("logout")]
         public async Task<ActionResult> Logout()

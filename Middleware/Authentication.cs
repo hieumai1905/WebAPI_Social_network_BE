@@ -11,6 +11,7 @@ public class Authentication
 
     public async Task Invoke(HttpContext context)
     {
+        context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
         if (!context.Request.Path.StartsWithSegments("/v1/api/login") &&
             !context.Request.Path.StartsWithSegments("/v1/api/register") &&
             !context.Request.Path.StartsWithSegments("/v1/api/register/confirm-code") &&

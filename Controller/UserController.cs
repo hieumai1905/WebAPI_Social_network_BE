@@ -51,18 +51,13 @@ namespace Web_Social_network_BE.Controller
         }
 
 
-        [HttpPut("{id}/change-password")]
-        public async Task<IActionResult> UpdatePassword(string id, ChangePasswordModel changePassword)
+        [HttpPut("change-password")]
+        public async Task<IActionResult> UpdatePassword(ChangePasswordModel changePassword)
         {
             try
             {
                 var userId = _session.GetString("UserId");
-                if (userId != id || userId == null)
-                {
-                    return StatusCode(403, "Forbidden");
-                }
-
-                var user = await _userRepository.GetInformationUser(id);
+                var user = await _userRepository.GetInformationUser(userId);
                 if (user == null || changePassword.OldPassword == "" ||
                     user.UserInfo.Password != MD5Hash.GetHashString(changePassword.OldPassword))
                 {
