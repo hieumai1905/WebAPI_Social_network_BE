@@ -94,6 +94,18 @@ namespace Web_Social_network_BE.Controller
 
             return Ok(relation);
         }
+        [HttpGet("{userId}/users-blocks-me")]
+        public async Task<IActionResult> GetUserBlockMe(string userId)
+        {
+            var relation = await _relationRepository.GetAnyUserBlockMe(userId);
+
+            if (relation == null)
+            {
+                return NotFound($"User with id {userId} not found");
+            }
+
+            return Ok(relation);
+        }
         //Lấy ra mối quan hệ follow của user có id = UserId
         [HttpGet("{userId}/follows")]
         public async Task<IActionResult> GetFollowById(string userId)
@@ -169,6 +181,18 @@ namespace Web_Social_network_BE.Controller
                     if (_relationRepository.CheckFollowRelation(userId, userTargetId) == true)
                     {
                         await UnFollow(userId, userTargetId);
+                    }
+                    if (_relationRepository.CheckFollowRelation(userTargetId, userId) == true)
+                    {
+                        await UnFollow(userTargetId, userId);
+                    }
+                    if (_relationRepository.CheckWaitingRelation(userId, userTargetId) == true)
+                    {
+                        await Reject(userId, userTargetId);
+                    }
+                    else if (_relationRepository.CheckRequestRelation(userId, userTargetId) == true)
+                    {
+                        await CancleFriendRequest(userId, userTargetId);
                     }
                     Relation relationBlock = new Relation();
                     relationBlock.RelationId = Guid.NewGuid().ToString();
