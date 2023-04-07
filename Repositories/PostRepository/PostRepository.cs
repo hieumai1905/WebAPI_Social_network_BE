@@ -27,7 +27,7 @@ namespace Web_Social_network_BE.Repositories.PostRepository
         {
             try
             {
-                return await _context.Posts.ToListAsync();
+                return await _context.Posts.OrderByDescending(x => x.CreateAt).ToListAsync();
             }
             catch (Exception ex)
             {
