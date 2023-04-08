@@ -302,6 +302,14 @@ namespace Web_Social_network_BE.Controller
         {
             try
             {
+                if (_relationRepository.CheckFollowRelation(userId, userTargetId) == true)
+                {
+                    await _relationRepository.DeleteFollowByUserId(userId, userTargetId);
+                }
+                if (_relationRepository.CheckFollowRelation(userTargetId, userId) == true)
+                {
+                    await _relationRepository.DeleteFollowByUserId(userTargetId, userId);
+                }
                 await _relationRepository.RejectFriendRequestByUserId(userId, userTargetId);
                 return NoContent();
             }
