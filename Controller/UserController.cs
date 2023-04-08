@@ -106,6 +106,7 @@ namespace Web_Social_network_BE.Controller
             }
         }
 
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] User user)
         {
