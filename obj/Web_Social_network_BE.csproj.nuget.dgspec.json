@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\ProjectLapWeb\\New_version\\WebAPI_Social_network_BE\\Web_Social_network_BE.csproj": {}
+    "C:\\Users\\Admin\\OneDrive - University of transport and Communication\\Máy tính\\BE\\Web_Social_network_BE.csproj": {}
   },
   "projects": {
-    "E:\\ProjectLapWeb\\New_version\\WebAPI_Social_network_BE\\Web_Social_network_BE.csproj": {
+    "C:\\Users\\Admin\\OneDrive - University of transport and Communication\\Máy tính\\BE\\Web_Social_network_BE.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\ProjectLapWeb\\New_version\\WebAPI_Social_network_BE\\Web_Social_network_BE.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\OneDrive - University of transport and Communication\\Máy tính\\BE\\Web_Social_network_BE.csproj",
         "projectName": "Web_Social_network_BE",
-        "projectPath": "E:\\ProjectLapWeb\\New_version\\WebAPI_Social_network_BE\\Web_Social_network_BE.csproj",
-        "packagesPath": "C:\\Users\\maiva\\.nuget\\packages\\",
-        "outputPath": "E:\\ProjectLapWeb\\New_version\\WebAPI_Social_network_BE\\obj\\",
+        "projectPath": "C:\\Users\\Admin\\OneDrive - University of transport and Communication\\Máy tính\\BE\\Web_Social_network_BE.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Admin\\OneDrive - University of transport and Communication\\Máy tính\\BE\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\maiva\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -88,7 +88,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.103\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }
