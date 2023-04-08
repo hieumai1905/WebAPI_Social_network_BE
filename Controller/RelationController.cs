@@ -94,6 +94,18 @@ namespace Web_Social_network_BE.Controller
 
             return Ok(relation);
         }
+        [HttpGet("{userId}/users-blocks-me")]
+        public async Task<IActionResult> GetUserBlockMe(string userId)
+        {
+            var relation = await _relationRepository.GetAnyUserBlockMe(userId);
+
+            if (relation == null)
+            {
+                return NotFound($"User with id {userId} not found");
+            }
+
+            return Ok(relation);
+        }
         //Lấy ra mối quan hệ follow của user có id = UserId
         [HttpGet("{userId}/follows")]
         public async Task<IActionResult> GetFollowById(string userId)
@@ -121,9 +133,17 @@ namespace Web_Social_network_BE.Controller
                         {
                             return StatusCode(500, $"An error occurred while sending friend request, unblock after send friend request");
                         }
+                        if (_relationRepository.CheckFollowRelation(userId, userTargetId) == false)
+                        {
+                            Relation relationFollow = new Relation();
+                            relationFollow.RelationId = Guid.NewGuid().ToString();
+                            relationFollow.TypeRelation = "FOLLOW";
+                            relationFollow.UserId = userId;
+                            relationFollow.UserTargetIduserId = userTargetId;
+                            await _relationRepository.AddAsync(relationFollow);
+                        }
                         Relation relationUserRequest = new Relation();
                         Relation relationUserWaiting = new Relation();
-                        Relation relationFollow = new Relation();
                         relationUserRequest.RelationId = Guid.NewGuid().ToString();
                         relationUserRequest.TypeRelation = "REQUEST";
                         relationUserRequest.UserId = userId;
@@ -132,13 +152,8 @@ namespace Web_Social_network_BE.Controller
                         relationUserWaiting.TypeRelation = "WAITING";
                         relationUserWaiting.UserId = userTargetId;
                         relationUserWaiting.UserTargetIduserId = userId;
-                        relationFollow.RelationId = Guid.NewGuid().ToString();
-                        relationFollow.TypeRelation = "FOLLOW";
-                        relationFollow.UserId = userId;
-                        relationFollow.UserTargetIduserId = userTargetId;
                         await _relationRepository.AddAsync(relationUserRequest);
                         await _relationRepository.AddAsync(relationUserWaiting);
-                        await _relationRepository.AddAsync(relationFollow);
                         return Ok();
                     }
                     else
@@ -170,6 +185,18 @@ namespace Web_Social_network_BE.Controller
                     {
                         await UnFollow(userId, userTargetId);
                     }
+                    if (_relationRepository.CheckFollowRelation(userTargetId, userId) == true)
+                    {
+                        await UnFollow(userTargetId, userId);
+                    }
+                    if (_relationRepository.CheckWaitingRelation(userId, userTargetId) == true)
+                    {
+                        await Reject(userId, userTargetId);
+                    }
+                    else if (_relationRepository.CheckRequestRelation(userId, userTargetId) == true)
+                    {
+                        await CancleFriendRequest(userId, userTargetId);
+                    }
                     Relation relationBlock = new Relation();
                     relationBlock.RelationId = Guid.NewGuid().ToString();
                     relationBlock.TypeRelation = "BLOCK";
@@ -194,27 +221,20 @@ namespace Web_Social_network_BE.Controller
             {
                 if (_relationRepository.CheckFollowRelation(userId, userTargetId) == false)
                 {
-                    if (_relationRepository.CheckFollowRelation(userId, userTargetId) == false)
+                    if (_relationRepository.CheckBlockRelation(userId, userTargetId) == true)
                     {
-                        if (_relationRepository.CheckBlockRelation(userId, userTargetId) == true)
-                        {
-                            return StatusCode(500, $"An error occurred while sending friend request, unblock after follow");
-                        }
-                        Relation relationFollow = new Relation();
-                        relationFollow.RelationId = Guid.NewGuid().ToString();
-                        relationFollow.TypeRelation = "FOLLOW";
-                        relationFollow.UserId = userId;
-                        relationFollow.UserTargetIduserId = userTargetId;
-                        await _relationRepository.AddAsync(relationFollow);
-                        return Ok();
+                        return StatusCode(500, $"An error occurred while sending friend request, unblock after follow");
                     }
-                    else
-                        return StatusCode(500, $"An error occurred while follow");
+                    Relation relationFollow = new Relation();
+                    relationFollow.RelationId = Guid.NewGuid().ToString();
+                    relationFollow.TypeRelation = "FOLLOW";
+                    relationFollow.UserId = userId;
+                    relationFollow.UserTargetIduserId = userTargetId;
+                    await _relationRepository.AddAsync(relationFollow);
+                    return Ok();
                 }
                 else
-                {
-                    return StatusCode(500, $"Relation follow is exist");
-                }
+                    return StatusCode(500, $"An error occurred while follow");
             }
             catch (Exception ex)
             {
@@ -233,12 +253,15 @@ namespace Web_Social_network_BE.Controller
                 relationWaiting.TypeRelation = "FRIEND";
                 await _relationRepository.UpdateAsync(relationRequest);
                 await _relationRepository.UpdateAsync(relationWaiting);
-                Relation relationFollow = new Relation();
-                relationFollow.RelationId = Guid.NewGuid().ToString();
-                relationFollow.TypeRelation = "FOLLOW";
-                relationFollow.UserId = userId;
-                relationFollow.UserTargetIduserId = userTargetId;
-                await _relationRepository.AddAsync(relationFollow);
+                if (_relationRepository.CheckFollowRelation(userId, userTargetId) == false)
+                {
+                    Relation relationFollow = new Relation();
+                    relationFollow.RelationId = Guid.NewGuid().ToString();
+                    relationFollow.TypeRelation = "FOLLOW";
+                    relationFollow.UserId = userId;
+                    relationFollow.UserTargetIduserId = userTargetId;
+                    await _relationRepository.AddAsync(relationFollow);
+                }
 
                 return Ok();
             }
@@ -253,9 +276,15 @@ namespace Web_Social_network_BE.Controller
         {
             try
             {
+                if (_relationRepository.CheckFollowRelation(userId, userTargetId) == true)
+                {
+                    await _relationRepository.DeleteFollowByUserId(userId, userTargetId);
+                }
+                if (_relationRepository.CheckFollowRelation(userTargetId, userId) == true)
+                {
+                    await _relationRepository.DeleteFollowByUserId(userTargetId, userId);
+                }
                 await _relationRepository.DeleteFriendByUserId(userId, userTargetId);
-                await _relationRepository.DeleteFollowByUserId(userId, userTargetId);
-                await _relationRepository.DeleteFollowByUserId(userTargetId, userId);
                 return NoContent();
             }
             catch (ArgumentException ex)
@@ -273,6 +302,14 @@ namespace Web_Social_network_BE.Controller
         {
             try
             {
+                if (_relationRepository.CheckFollowRelation(userId, userTargetId) == true)
+                {
+                    await _relationRepository.DeleteFollowByUserId(userId, userTargetId);
+                }
+                if (_relationRepository.CheckFollowRelation(userTargetId, userId) == true)
+                {
+                    await _relationRepository.DeleteFollowByUserId(userTargetId, userId);
+                }
                 await _relationRepository.RejectFriendRequestByUserId(userId, userTargetId);
                 return NoContent();
             }
@@ -326,8 +363,11 @@ namespace Web_Social_network_BE.Controller
         {
             try
             {
+                if (_relationRepository.CheckFollowRelation(userId, userTargetId) == true)
+                {
+                    await _relationRepository.DeleteFollowByUserId(userId, userTargetId);
+                }
                 await _relationRepository.DeleteRequestAndWaitingByUserId(userId, userTargetId);
-                await _relationRepository.DeleteFollowByUserId(userId, userTargetId);
                 return NoContent();
             }
             catch (ArgumentException ex)

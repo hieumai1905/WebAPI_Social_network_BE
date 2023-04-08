@@ -57,6 +57,17 @@ namespace Web_Social_network_BE.Repositories.RelationRepository
                 throw new Exception("an error occurred while getting all relation block for user by id", ex);
             }
         }
+        public async Task<IEnumerable> GetAnyUserBlockMe(string key)
+        {
+            try
+            {
+                return await _context.Relations.Where(x => x.UserTargetIduserId == key).Where(x => x.TypeRelation == "BLOCK").ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("an error occurred while getting all relation block for user by id", ex);
+            }
+        }
         public async Task<IEnumerable> GetFollowByUserId(string key)
         {
             try
