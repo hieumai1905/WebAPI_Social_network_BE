@@ -92,8 +92,6 @@ public class RequestCodeRepository : IRequestCodeRepository
         try
         {
             var request = await _context.Requests.FirstOrDefaultAsync(u => u.Email == email);
-            if (request == null)
-                throw new ArgumentException($"Request with email {email} does not exist");
             return request;
         }
         catch (Exception ex)
@@ -107,7 +105,7 @@ public class RequestCodeRepository : IRequestCodeRepository
         try
         {
             var requestOutTime =
-                await _context.Requests.Where(x => x.RegisterAt.AddMinutes(5) < DateTime.Now).ToListAsync();
+                await _context.Requests.Where(x => x.RegisterAt.AddMinutes(1) < DateTime.Now).ToListAsync();
             _context.Requests.RemoveRange(requestOutTime);
         }
         catch (Exception ex)
