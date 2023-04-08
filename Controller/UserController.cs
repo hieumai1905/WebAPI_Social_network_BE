@@ -64,7 +64,7 @@ namespace Web_Social_network_BE.Controller
             }
         }
 
-        [HttpGet("/profile-me")]
+        [HttpGet("profile-me")]
         public async Task<ActionResult<User>> GetFullInformationUserMe()
         {
             try
@@ -106,8 +106,8 @@ namespace Web_Social_network_BE.Controller
             }
         }
 
-        [HttpPut("{userId}")]
-        public async Task<IActionResult> Update(string id, User user)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] User user)
         {
             var userId = _session.GetString("UserId");
             if (userId != id || userId == null)
