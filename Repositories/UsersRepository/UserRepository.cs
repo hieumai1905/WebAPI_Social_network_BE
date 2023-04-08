@@ -41,6 +41,19 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
         }
 
+        public async Task<IEnumerable<User>> GetAllWithInfoAsync()
+        {
+            try
+            {
+                var users = _context.Users.Include(u => u.UserInfo).ToList();
+                return users;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while getting all users.{ex}");
+            }
+        }
+
         public async Task<User> GetByIdAsync(string key)
         {
             try

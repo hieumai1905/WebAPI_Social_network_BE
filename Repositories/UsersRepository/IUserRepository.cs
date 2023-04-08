@@ -11,7 +11,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
         Task<User> GetInformationUser(string idUser);
         Task<User> Login(LoginModel account);
         Task<User> Register(RegisterModel account);
-
         Task<IEnumerable<User>> FindUserContent(string content);
+        Task<IEnumerable<User>> GetAllWithInfoAsync();
     }
 }
