@@ -15,6 +15,7 @@ public class Authentication
         if (!context.Request.Path.StartsWithSegments("/v1/api/login") &&
             !context.Request.Path.StartsWithSegments("/v1/api/register") &&
             !context.Request.Path.StartsWithSegments("/v1/api/register/confirm-code") &&
+            !context.Request.Path.StartsWithSegments("/v1/api/forgot-password") &&
             !context.Request.Path.StartsWithSegments("/v1/api/codes/refresh"))
         {
             var userId = context.Session.GetString("UserId");

@@ -145,7 +145,7 @@ namespace Web_Social_network_BE.Controller
                     return BadRequest("Code is incorrect");
                 }
 
-                if (request.RegisterAt.AddMinutes(5) < DateTime.Now)
+                if (request.RegisterAt.AddMinutes(1) < DateTime.Now)
                 {
                     return BadRequest("Code is expired");
                 }
@@ -153,6 +153,125 @@ namespace Web_Social_network_BE.Controller
                 user.UserInfo.Status = "ACTIVE";
                 await _userRepository.UpdateAsync(user);
                 await _requestCodeRepository.DeleteAsync(request.RegisterId);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("forgot-password/{email}")]
+        public async Task<ActionResult> ForgotPassword(string email)
+        {
+            try
+            {
+                var account = await _userRepository.GetByEmail(email);
+                if (account == null)
+                {
+                    return BadRequest("Email don't exist");
+                }
+
+                var requestExist = await _requestCodeRepository.GetByEmail(email);
+                var code = new Random().Next(100000, 999999);
+                if (requestExist == null || requestExist.CodeType != "FORGOT_PASSWORD")
+                {
+                    Request request = new Request()
+                    {
+                        RegisterAt = DateTime.Now,
+                        CodeType = "FORGOT_PASSWORD",
+                        RequestCode = code,
+                        Email = email
+                    };
+                    try
+                    {
+                        await _requestCodeRepository.CleanRequestCode();
+                        await _requestCodeRepository.AddAsync(request);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"An error occurred while adding the request: {ex.Message}");
+                    }
+                }
+                else
+                {
+                    var request = await _requestCodeRepository.RefreshCode(email);
+                    code = request.RequestCode;
+                }
+
+                try
+                {
+                    Mail.SendMail(email, "Confirm code!", code.ToString(),
+                        email);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception($"An error occurred while sending the email: {ex.Message}");
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("forgot-password/confirm-code")]
+        public async Task<ActionResult> ConfirmForgotPassword(string code, [FromBody] string email)
+        {
+            try
+            {
+                var account = await _userRepository.GetByEmail(email);
+                if (account == null)
+                {
+                    return BadRequest("Email don't exist");
+                }
+
+                var user = await _userRepository.GetInformationUser(account.UserId);
+                var request = await _requestCodeRepository.GetByEmail(email);
+
+                if (request.RequestCode.ToString() != code)
+                {
+                    return BadRequest("Code is incorrect");
+                }
+
+                if (request.CodeType != "FORGOT_PASSWORD")
+                {
+                    return BadRequest("Code is incorrect");
+                }
+
+                if (request.RegisterAt.AddMinutes(1) < DateTime.Now)
+                {
+                    return BadRequest("Code is expired");
+                }
+
+                _session.SetString("UserId", user.UserId);
+                _session.SetString("UserRole", user.UserInfo.UserRole);
+                _session.SetString("UserStatus", user.UserInfo.Status);
+                Response.Cookies.Append("UserId", user.UserId);
+                Response.Cookies.Append("UserRole", user.UserInfo.UserRole);
+                Response.Cookies.Append("UserStatus", user.UserInfo.Status);
+                await _requestCodeRepository.DeleteAsync(request.RegisterId);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPut("reset-password")]
+        public async Task<IActionResult> UpdatePassword([FromBody]string changePassword)
+        {
+            try
+            {
+                var userId = _session.GetString("UserId");
+                if (userId == null)
+                    return BadRequest("You must be logged in to change your password");
+                var user = await _userRepository.GetInformationUser(userId);
+                user.UserInfo.Password = MD5Hash.GetHashString(changePassword);
+                await _userRepository.UpdateAsync(user);
                 return Ok(user);
             }
             catch (Exception ex)
