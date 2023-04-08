@@ -24,7 +24,7 @@ public class AdminController : ControllerBase
     {
         try
         {
-            var users = await _userRepository.GetAllAsync();
+            var users = await _userRepository.GetAllWithInfoAsync();
             return Ok(users);
         }
         catch (Exception ex)

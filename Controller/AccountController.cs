@@ -262,7 +262,7 @@ namespace Web_Social_network_BE.Controller
         }
 
         [HttpPut("reset-password")]
-        public async Task<IActionResult> UpdatePassword([FromBody]string changePassword)
+        public async Task<IActionResult> UpdatePassword([FromBody] string changePassword)
         {
             try
             {
@@ -270,6 +270,10 @@ namespace Web_Social_network_BE.Controller
                 if (userId == null)
                     return BadRequest("You must be logged in to change your password");
                 var user = await _userRepository.GetInformationUser(userId);
+                if (MD5Hash.GetHashString(changePassword) == user.UserInfo.Password)
+                {
+                    return BadRequest("Don't use the same password");
+                }
                 user.UserInfo.Password = MD5Hash.GetHashString(changePassword);
                 await _userRepository.UpdateAsync(user);
                 return Ok(user);
