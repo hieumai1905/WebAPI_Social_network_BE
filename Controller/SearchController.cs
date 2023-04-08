@@ -15,39 +15,39 @@ namespace Web_Social_network_BE.Controller
 		{
 			this._userRepository = userRepository;
 		}
-		[HttpGet("people/name=/{userInfoId}")]
-		public async Task<IActionResult> GetUserInfo(string userInfoId)
+		[HttpGet("people/userInfoId")]
+		public async Task<IActionResult> GetUserInfo(string q)
 		{
 			try
 			{
-				var userInfor = await _userRepository.GetUserInfoAsync(userInfoId);
-				return Ok(userInfor);
+				var user = await _userRepository.GetUserInfoAsync(q);
+				return Ok(user);
 			}
 			catch (Exception ex)
 			{
 				return StatusCode(500, ex.Message);
 			}
 		}
-		[HttpGet("people/email=/{email}")]
-		public async Task<IActionResult> GetByEmail(string email)
+		[HttpGet("people/email")]
+		public async Task<IActionResult> GetByEmail(string q)
 		{
 			try
 			{
-				var uEmail = await _userRepository.GetByEmail(email);
-				return Ok(uEmail);
+				var user = await _userRepository.GetByEmail(q);
+				return Ok(user);
 			}
 			catch (Exception ex)
 			{
 				return StatusCode(500, ex.Message);
 			}
 		}
-		[HttpGet("people/phone=/{phone}")]
-		public async Task<IActionResult> GetByPhone(string phone)
+		[HttpGet("people/phone")]
+		public async Task<IActionResult> GetByPhone(string q)
 		{
 			try
 			{
-				var uPhone = await _userRepository.GetByPhone(phone);
-				return Ok(uPhone);
+				var user = await _userRepository.GetByPhone(q);
+				return Ok(user);
 			}
 			catch (Exception ex)
 			{
