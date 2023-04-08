@@ -11,9 +11,13 @@ namespace Web_Social_network_BE.Controller
     public class RelationController : ControllerBase
     {
         private readonly IRelationRepository _relationRepository;
-        public RelationController(IRelationRepository relationRepository)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ISession _session;
+        public RelationController(IRelationRepository relationRepository, IHttpContextAccessor httpContextAccessor)
         {
             _relationRepository = relationRepository;
+            _httpContextAccessor = httpContextAccessor;
+            _session = _httpContextAccessor.HttpContext.Session;
         }
         [HttpGet("relation")]
         public async Task<IActionResult> GetAll()
@@ -29,11 +33,12 @@ namespace Web_Social_network_BE.Controller
             }
         }
         //Lấy ra mối quan hệ của 2 user với nhau
-        [HttpGet("{userId}/relation/{userTargetId}")]
-        public async Task<IActionResult> GetRelationByUserIdAndUserTargetId(string userId, string userTargetId)
+        [HttpGet("relation/{userTargetId}")]
+        public async Task<IActionResult> GetRelationByUserIdAndUserTargetId(string userTargetId)
         {
             try
             {
+                var userId = _session.GetString("UserId");
                 var relation = await _relationRepository.GetRelationByUserIdAndUserTargetId(userId, userTargetId);
                 return Ok(relation);
             }
@@ -56,9 +61,10 @@ namespace Web_Social_network_BE.Controller
             return Ok(relation);
         }
         //Lấy ra toàn bộ lời mời kết bạn của user có id = UserId
-        [HttpGet("{userId}/friend-requests")]
-        public async Task<IActionResult> GetWaitingById(string userId)
+        [HttpGet("friend-requests")]
+        public async Task<IActionResult> GetWaitingById()
         {
+            var userId = _session.GetString("UserId");
             var relation = await _relationRepository.GetWaitingUserById(userId);
 
             if (relation == null)
@@ -69,9 +75,10 @@ namespace Web_Social_network_BE.Controller
             return Ok(relation);
         }
         //Lấy ra toàn bộ danh sách gửi lời mời kết bạn của user có id = UserId
-        [HttpGet("{userId}/requests-user")]
-        public async Task<IActionResult> GetRequestById(string userId)
+        [HttpGet("requests-user")]
+        public async Task<IActionResult> GetRequestById()
         {
+            var userId = _session.GetString("UserId");
             var relation = await _relationRepository.GetRequestByUserId(userId);
 
             if (relation == null)
@@ -82,9 +89,10 @@ namespace Web_Social_network_BE.Controller
             return Ok(relation);
         }
         //Lấy ra mối quan hệ block của user có id = UserId
-        [HttpGet("{userId}/blocks")]
-        public async Task<IActionResult> GetBlockById(string userId)
+        [HttpGet("blocks")]
+        public async Task<IActionResult> GetBlockById()
         {
+            var userId = _session.GetString("UserId");
             var relation = await _relationRepository.GetBlockByUserId(userId);
 
             if (relation == null)
@@ -94,9 +102,10 @@ namespace Web_Social_network_BE.Controller
 
             return Ok(relation);
         }
-        [HttpGet("{userId}/users-blocks-me")]
-        public async Task<IActionResult> GetUserBlockMe(string userId)
+        [HttpGet("users-blocks-me")]
+        public async Task<IActionResult> GetUserBlockMe()
         {
+            var userId = _session.GetString("UserId");
             var relation = await _relationRepository.GetAnyUserBlockMe(userId);
 
             if (relation == null)
@@ -107,9 +116,10 @@ namespace Web_Social_network_BE.Controller
             return Ok(relation);
         }
         //Lấy ra mối quan hệ follow của user có id = UserId
-        [HttpGet("{userId}/follows")]
-        public async Task<IActionResult> GetFollowById(string userId)
+        [HttpGet("follows")]
+        public async Task<IActionResult> GetFollowById()
         {
+            var userId = _session.GetString("UserId");
             var relation = await _relationRepository.GetFollowByUserId(userId);
 
             if (relation == null)
@@ -120,11 +130,12 @@ namespace Web_Social_network_BE.Controller
             return Ok(relation);
         }
         // User có id = UserId gửi lời mời kết bạn đến user có id = UserTargetId
-        [HttpPost("{userId}/friend-request/{userTargetId}")]
-        public async Task<IActionResult> SendFriendRequest(String userId, String userTargetId)
+        [HttpPost("friend-request/{userTargetId}")]
+        public async Task<IActionResult> SendFriendRequest(string userTargetId)
         {
             try
             {
+                var userId = _session.GetString("UserId");
                 if (_relationRepository.CheckWaitingRelation(userTargetId, userId) == false && _relationRepository.CheckWaitingRelation(userId, userTargetId) == false)
                 {
                     if (_relationRepository.CheckFriendRelation(userId, userTargetId) == false)
@@ -170,32 +181,33 @@ namespace Web_Social_network_BE.Controller
             }
         }
         //User có id = UserId block user có id = UserTargetId
-        [HttpPost("{userId}/block/{userTargetId}")]
-        public async Task<IActionResult> BlockUser(string userId, string userTargetId)
+        [HttpPost("block/{userTargetId}")]
+        public async Task<IActionResult> BlockUser(string userTargetId)
         {
             try
             {
+                var userId = _session.GetString("UserId");
                 if (_relationRepository.CheckBlockRelation(userId, userTargetId) == false)
                 {
                     if (_relationRepository.CheckFriendRelation(userId, userTargetId) == true)
                     {
-                        await UnFriend(userId, userTargetId);
+                        await UnFriend(userTargetId);
                     }
                     if (_relationRepository.CheckFollowRelation(userId, userTargetId) == true)
                     {
-                        await UnFollow(userId, userTargetId);
+                        await _relationRepository.DeleteFollowByUserId(userId, userTargetId);
                     }
                     if (_relationRepository.CheckFollowRelation(userTargetId, userId) == true)
                     {
-                        await UnFollow(userTargetId, userId);
+                        await _relationRepository.DeleteFollowByUserId(userTargetId, userId);
                     }
                     if (_relationRepository.CheckWaitingRelation(userId, userTargetId) == true)
                     {
-                        await Reject(userId, userTargetId);
+                        await Reject(userTargetId);
                     }
                     else if (_relationRepository.CheckRequestRelation(userId, userTargetId) == true)
                     {
-                        await CancleFriendRequest(userId, userTargetId);
+                        await CancleFriendRequest(userTargetId);
                     }
                     Relation relationBlock = new Relation();
                     relationBlock.RelationId = Guid.NewGuid().ToString();
@@ -214,11 +226,12 @@ namespace Web_Social_network_BE.Controller
             }
         }
         //User có id = UserId Follow User có id = UserTargetId
-        [HttpPost("{userId}/follow/{userTargetId}")]
-        public async Task<IActionResult> FollowUser(string userId, string userTargetId)
+        [HttpPost("follow/{userTargetId}")]
+        public async Task<IActionResult> FollowUser(string userTargetId)
         {
             try
             {
+                var userId = _session.GetString("UserId");
                 if (_relationRepository.CheckFollowRelation(userId, userTargetId) == false)
                 {
                     if (_relationRepository.CheckBlockRelation(userId, userTargetId) == true)
@@ -242,11 +255,12 @@ namespace Web_Social_network_BE.Controller
             }
         }
         //User có id = userId chấp nhận lời mời kết bạn của user có id = userTargetId
-        [HttpPut("{userId}/friend-request/{userTargetId}/accept")]
-        public async Task<IActionResult> AcceptFriendRequest(string userId, string userTargetId)
+        [HttpPut("friend-request/{userTargetId}/accept")]
+        public async Task<IActionResult> AcceptFriendRequest(string userTargetId)
         {
             try
             {
+                var userId = _session.GetString("UserId");
                 var relationRequest = _relationRepository.GetRequestByUserIdAndUserTargetId(userTargetId, userId);
                 var relationWaiting = _relationRepository.GetWaitingByUserIdAndUserTargetId(userId, userTargetId);
                 relationRequest.TypeRelation = "FRIEND";
@@ -271,11 +285,12 @@ namespace Web_Social_network_BE.Controller
             }
         }
         //User có id = UserId xóa mối quan hệ bạn bè với user có id = UserTargetId
-        [HttpDelete("{userId}/friends/{userTargetId}")]
-        public async Task<IActionResult> UnFriend(string userId, string userTargetId)
+        [HttpDelete("friends/{userTargetId}")]
+        public async Task<IActionResult> UnFriend(string userTargetId)
         {
             try
             {
+                var userId = _session.GetString("UserId");
                 if (_relationRepository.CheckFollowRelation(userId, userTargetId) == true)
                 {
                     await _relationRepository.DeleteFollowByUserId(userId, userTargetId);
@@ -297,11 +312,12 @@ namespace Web_Social_network_BE.Controller
             }
         }
         // User có id = userId từ chối lời mời kết bạn của user có id = userTargetId
-        [HttpDelete("{userId}/friend-requests/{userTargetId}/reject")]
-        public async Task<IActionResult> Reject(string userId, string userTargetId)
+        [HttpDelete("friend-requests/{userTargetId}/reject")]
+        public async Task<IActionResult> Reject(string userTargetId)
         {
             try
             {
+                var userId = _session.GetString("UserId");
                 if (_relationRepository.CheckFollowRelation(userId, userTargetId) == true)
                 {
                     await _relationRepository.DeleteFollowByUserId(userId, userTargetId);
@@ -323,11 +339,12 @@ namespace Web_Social_network_BE.Controller
             }
         }
         //User có id = UserId hủy follow với user có id = UserTargetId
-        [HttpDelete("{userId}/follow/{userTargetId}")]
-        public async Task<IActionResult> UnFollow(string userId, string userTargetId)
+        [HttpDelete("follow/{userTargetId}")]
+        public async Task<IActionResult> UnFollow(string userTargetId)
         {
             try
             {
+                var userId = _session.GetString("UserId");
                 await _relationRepository.DeleteFollowByUserId(userId, userTargetId);
                 return NoContent();
             }
@@ -340,12 +357,13 @@ namespace Web_Social_network_BE.Controller
                 return StatusCode(500, $"An error occurred while unfollow with id : {ex.Message}");
             }
         }
-        //User có id = UserTargetId hủy block với user có id = UserTargetId
-        [HttpDelete("{userId}/block/{userTargetId}")]
-        public async Task<IActionResult> UnBlock(string userId, string userTargetId)
+        //User có id = UserId hủy block với user có id = UserTargetId
+        [HttpDelete("block/{userTargetId}")]
+        public async Task<IActionResult> UnBlock(string userTargetId)
         {
             try
             {
+                var userId = _session.GetString("UserId");
                 await _relationRepository.DeleteBlockByUserId(userId, userTargetId);
                 return NoContent();
             }
@@ -358,11 +376,12 @@ namespace Web_Social_network_BE.Controller
                 return StatusCode(500, $"An error occurred while unblock with id : {ex.Message}");
             }
         }
-        [HttpDelete("{userId}/friend-requests/{userTargetId}/cancle")]
-        public async Task<IActionResult> CancleFriendRequest(string userId, string userTargetId)
+        [HttpDelete("friend-requests/{userTargetId}/cancle")]
+        public async Task<IActionResult> CancleFriendRequest(string userTargetId)
         {
             try
             {
+                var userId = _session.GetString("UserId");
                 if (_relationRepository.CheckFollowRelation(userId, userTargetId) == true)
                 {
                     await _relationRepository.DeleteFollowByUserId(userId, userTargetId);
