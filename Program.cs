@@ -84,9 +84,9 @@ namespace Web_Social_network_BE
 
             app.UseCors("AllowAllOrigins");
 
-            app.UseMiddleware<Authentication>();
-
-            app.UseMiddleware<Authorization>();
+            // app.UseMiddleware<Authentication>();
+            //
+            // app.UseMiddleware<Authorization>();
 
             app.UseAuthorization();
 

@@ -26,6 +26,21 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
         }
 
+        public async Task<IEnumerable<User>> FindUserContent(string content)
+        {
+            try
+            {
+                var users = _context.Users.Where(u =>
+                    u.FullName.Contains(content) || u.UserInfo.Email.Contains(content) ||
+                    u.UserInfo.Phone.Contains(content)).ToList();
+                return users;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while getting all users.{ex}");
+            }
+        }
+
         public async Task<User> GetByIdAsync(string key)
         {
             try

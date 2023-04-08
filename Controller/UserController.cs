@@ -50,6 +50,35 @@ namespace Web_Social_network_BE.Controller
             }
         }
 
+        [HttpGet("search")]
+        public async Task<ActionResult<User>> SearchUser(string q)
+        {
+            try
+            {
+                var user = await _userRepository.FindUserContent(q);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("/profile-me")]
+        public async Task<ActionResult<User>> GetFullInformationUserMe()
+        {
+            try
+            {
+                var userId = _session.GetString("UserId");
+                var user = await _userRepository.GetInformationUser(userId);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
         [HttpPut("change-password")]
         public async Task<IActionResult> UpdatePassword(ChangePasswordModel changePassword)
@@ -77,7 +106,7 @@ namespace Web_Social_network_BE.Controller
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{userId}")]
         public async Task<IActionResult> Update(string id, User user)
         {
             var userId = _session.GetString("UserId");
