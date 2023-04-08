@@ -11,6 +11,7 @@ namespace Web_Social_network_BE.Repositories.RelationRepository
         Task<IEnumerable> GetFollowByUserId(string key);
         Task<IEnumerable> GetWaitingUserById(string key);
         Task<IEnumerable> GetRequestByUserId(string key);
+        Task<IEnumerable> GetAnyUserBlockMe(string key);
         Task<IEnumerable> GetRelationByUserIdAndUserTargetId(string userId, string userTargetId);
         Relation GetRequestByUserIdAndUserTargetId(string userId, string userTargetId);
         Relation GetWaitingByUserIdAndUserTargetId(string userId, string userTargetId);
