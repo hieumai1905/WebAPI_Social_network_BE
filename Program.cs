@@ -43,7 +43,7 @@ namespace Web_Social_network_BE
                 options.AddPolicy("AllowAllOrigins",
                     builder =>
                     {
-                        builder.WithOrigins("https://localhost:7261")
+                        builder.WithOrigins("https://localhost:7261", "https://localhost:44351")
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials();
@@ -84,9 +84,9 @@ namespace Web_Social_network_BE
 
             app.UseCors("AllowAllOrigins");
 
-            // app.UseMiddleware<Authentication>();
-            //
-            // app.UseMiddleware<Authorization>();
+            app.UseMiddleware<Authentication>();
+
+            app.UseMiddleware<Authorization>();
 
             app.UseAuthorization();
 

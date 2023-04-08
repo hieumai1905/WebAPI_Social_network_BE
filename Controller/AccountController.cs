@@ -128,7 +128,6 @@ namespace Web_Social_network_BE.Controller
                     return BadRequest("Don't exist user with this email");
                 }
 
-
                 if (user.UserInfo.Status == "ACTIVE")
                 {
                     return BadRequest("User is already active");
