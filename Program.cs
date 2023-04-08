@@ -1,3 +1,4 @@
+using Web_Social_network_BE.Middleware;
 using Web_Social_network_BE.Models;
 using Web_Social_network_BE.Repositories.CommentRepository;
 using Web_Social_network_BE.Repositories.LikeRepository;
@@ -21,6 +22,20 @@ namespace Web_Social_network_BE
             // ------------------------------------------------------------//
 
 
+            // ----------------------register session/cookie-----------------------------//
+
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(3600);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+            builder.Services.AddHttpContextAccessor();
+
+            // ------------------------------------------------------------//
+
+
             // ----------------------register cors-----------------------------//
 
             builder.Services.AddCors(options =>
@@ -28,9 +43,10 @@ namespace Web_Social_network_BE
                 options.AddPolicy("AllowAllOrigins",
                     builder =>
                     {
-                        builder.AllowAnyOrigin()
-                               .AllowAnyHeader()
-                               .AllowAnyMethod();
+                        builder.WithOrigins("https://localhost:7261")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
                     });
             });
 
@@ -46,6 +62,7 @@ namespace Web_Social_network_BE
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IRelationRepository, RelationRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IRequestCodeRepository, RequestCodeRepository>();
 
             // ------------------------------------------------------------//
 
@@ -63,9 +80,15 @@ namespace Web_Social_network_BE
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseSession();
 
             app.UseCors("AllowAllOrigins");
+
+            // app.UseMiddleware<Authentication>();
+            //
+            // app.UseMiddleware<Authorization>();
+
+            app.UseAuthorization();
 
             app.MapControllers();
 
