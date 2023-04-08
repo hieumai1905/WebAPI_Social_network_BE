@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Web_Social_network_BE.Handle;
 using Web_Social_network_BE.Models;
@@ -106,8 +106,8 @@ namespace Web_Social_network_BE.Controller
             }
         }
 
-        [HttpPut("{userId}")]
-        public async Task<IActionResult> Update([FromBody] User user)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] User user)
         {
             var userId = _session.GetString("UserId");
             if (userId != id || userId == null)
