@@ -64,12 +64,12 @@ public class AdminController : ControllerBase
         }
     }
 
-    [HttpPut("look/{userId}")]
+    [HttpPut("lock/{userId}")]
     public async Task<IActionResult> LookUser(string userId)
     {
         try
         {
-            var user = await _userRepository.LookAsync(userId);
+            var user = await _userRepository.LockAsync(userId);
             return Ok(user);
         }
         catch (Exception ex)
@@ -78,12 +78,12 @@ public class AdminController : ControllerBase
         }
     }
     
-    [HttpPut("un-look/{userId}")]
+    [HttpPut("un-lock/{userId}")]
     public async Task<IActionResult> UnLookUser(string userId)
     {
         try
         {
-            var user = await _userRepository.LookAsync(userId);
+            var user = await _userRepository.UnLockAsync(userId);
             return Ok(user);
         }
         catch (Exception ex)
