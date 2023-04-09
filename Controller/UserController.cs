@@ -129,7 +129,6 @@ namespace Web_Social_network_BE.Controller
                         return StatusCode(403, "Forbidden");
                 }
 
-                user.UserInfo.Password = MD5Hash.GetHashString(user.UserInfo.Password);
                 await _userRepository.UpdateAsync(user);
                 return NoContent();
             }
