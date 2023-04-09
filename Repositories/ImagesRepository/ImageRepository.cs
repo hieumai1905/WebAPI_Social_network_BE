@@ -96,5 +96,25 @@ namespace Web_Social_network_BE.Repositories.ImageRepository
                 throw new Exception("An error occurred while deleting image", ex);
             }
         }
+
+        public async Task DeleteImageByPostId(string postId)
+        {
+            try
+            {
+                var imagetoDelete = await _context.Images.Where(x => x.PostId == postId).ToListAsync();
+                if (imagetoDelete != null)
+                {
+                    for (int i=0;i<imagetoDelete.Count;i++)
+                    {
+                        _context.Remove(imagetoDelete[i]); 
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while deleteting image", ex);
+            }
+        }
     }
 }
