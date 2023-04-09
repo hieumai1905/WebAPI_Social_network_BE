@@ -55,8 +55,22 @@ namespace Web_Social_network_BE.Controller
                 return StatusCode(500, $"An error occurred while getting image of 1 post: {ex.Message}");
             }
         }
-        //Thêm ảnh
-        [HttpPost]
+        //Lấy ra toàn bộ ảnh của user
+        [HttpGet("{userId}/Images")]
+		public async Task<IActionResult> GetImageByUserId(string userId)
+		{
+			try
+			{
+				var images = await _imageRepository.GetImageByUserId(userId);
+				return Ok(images);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"An error occurred while getting image by user id ");
+			}
+		}
+		//Thêm ảnh
+		[HttpPost]
         public async Task<IActionResult> Add([FromBody] Image image)
         {
             try
@@ -82,23 +96,23 @@ namespace Web_Social_network_BE.Controller
             await _imageRepository.UpdateAsync(image);
             return Ok();
         }
-        //Xóa ảnh có id = ImageId
-        [HttpDelete("{ImageId}")]
-        public async Task<IActionResult> Delete(string ImageId)
-        {
-            try
-            {
-                await _imageRepository.DeleteAsync(ImageId);
-                return NoContent();
-            }
-            catch (ArgumentException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred while deleting Image with id : {ex.Message}");
-            }
-        }
-    }
+		//Xóa ảnh có id = ImageId
+		[HttpDelete("{PostId}")]
+		public async Task<IActionResult> Delete(string PostId)
+		{
+			try
+			{
+				await _imageRepository.DeleteAsync(PostId);
+				return NoContent();
+			}
+			catch (ArgumentException ex)
+			{
+				return NotFound(ex.Message);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"An error occurred while deleting Image with id : {ex.Message}");
+			}
+		}
+	}
 }

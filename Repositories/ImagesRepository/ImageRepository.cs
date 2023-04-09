@@ -33,7 +33,24 @@ namespace Web_Social_network_BE.Repositories.ImageRepository
                 throw new Exception("An error occurred while getting all image for post.", ex);
             }
         }
-        public async Task<IEnumerable> GetImageByPostId (string PostId)
+		public async Task<IEnumerable> GetImageByUserId(string userId)
+		{
+			List<Image> images = new List<Image>();
+			List<Post> posts = await _context.Posts.Where(x => x.UserId == userId).ToListAsync();
+			if (posts != null)
+			{
+				for (int i = 0; i < posts.Count; i++)
+				{
+					List<Image> imageinPost = await _context.Images.Where(x => x.PostId == posts[i].PostId).ToListAsync();
+					foreach (var image in imageinPost)
+					{
+						images.Add(image);
+					}
+				}
+			}
+			return images;
+		}
+		public async Task<IEnumerable> GetImageByPostId (string PostId)
         {
             try
             {
@@ -80,20 +97,39 @@ namespace Web_Social_network_BE.Repositories.ImageRepository
 
         public async Task DeleteAsync(string key)
         {
+			try
+			{
+				var imageToDelete = await _context.Images.Where(x => x.PostId == key).ToListAsync();
+				if (imageToDelete != null)
+				{
+					for (int i = 0; i < imageToDelete.Count; i++)
+						_context.Remove(imageToDelete[i]);
+				}
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("An error occurred while deleting image", ex);
+			}
+		}
+
+        public async Task DeleteImageByPostId(string postId)
+        {
             try
             {
-                var imagetoDelete = await _context.Images.FindAsync(key);
-
-                if (imagetoDelete == null)
+                var imagetoDelete = await _context.Images.Where(x => x.PostId == postId).ToListAsync();
+                if (imagetoDelete != null)
                 {
-                    throw new ArgumentException("Image does not exist");
+                    for (int i=0;i<imagetoDelete.Count;i++)
+                    {
+                        _context.Remove(imagetoDelete[i]); 
+                    }
                 }
-                _context.Images.Remove(imagetoDelete);
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while deleting image", ex);
+                throw new Exception("An error occurred while deleteting image", ex);
             }
         }
     }
