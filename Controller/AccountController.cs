@@ -32,6 +32,8 @@ namespace Web_Social_network_BE.Controller
             try
             {
                 var user = await _userRepository.Login(account);
+                if (user.UserInfo.Status == "LOOK")
+                    return BadRequest("Your account is locked");
                 if (user != null)
                 {
                     _session.SetString("UserId", user.UserId);
@@ -274,6 +276,7 @@ namespace Web_Social_network_BE.Controller
                 {
                     return BadRequest("Don't use the same password");
                 }
+
                 user.UserInfo.Password = MD5Hash.GetHashString(changePassword);
                 await _userRepository.UpdateAsync(user);
                 return Ok(user);
