@@ -16,7 +16,7 @@ namespace Web_Social_network_BE.Repositories.PostRepository
         {
             try
             {
-                return await _context.Posts.Where(context => context.UserId == userId).ToListAsync();
+                return await _context.Posts.Where(context => context.UserId == userId).OrderByDescending(x => x.CreateAt).ToListAsync();
             }
             catch (Exception ex)
             {
