@@ -32,42 +32,55 @@ namespace Web_Social_network_BE.Controllers
 
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Add([FromBody] Post post)
-        {
-            try
-            {
-                string postId = Guid.NewGuid().ToString();
-                DateTime createAt = DateTime.Now;
-                post.PostId = postId;
-                post.CreateAt = createAt;
-                var newPost = await _postRepository.AddAsync(post);
-                return Ok(newPost);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+		[HttpPost]
+		public async Task<IActionResult> Add([FromBody] Post post)
+		{
+			string[] keyWord = new string[] { "chien tranh", "banh mi", "sua dac", "an khuya" };
+			foreach (string key in keyWord)
+			{
+				if (post.Content.Contains(key))
+				{
+					return BadRequest();
+				}
+			}
+			try
+			{
+				string postId = Guid.NewGuid().ToString();
+				DateTime createAt = DateTime.Now;
+				post.PostId = postId;
+				post.CreateAt = createAt;
+				var newPost = await _postRepository.AddAsync(post);
+				return Ok(newPost);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, ex.Message);
+			}
 
-        }
-        [HttpPut("{id_post}")]
-        public async Task<IActionResult> Update(string id_post, [FromBody] Post post)
-        {
-            if (id_post != post.PostId)
-            {
-                return BadRequest();
-            }
-            try
-            {
-                await _postRepository.UpdateAsync(post);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-        [HttpDelete("{id_post}")]
+		}
+		[HttpPut("{id_post}")]
+		public async Task<IActionResult> Update(string id_post, [FromBody] Post post)
+		{
+			string[] keyWord = new string[] { "chien tranh", "banh mi", "sua dac", "an khuya" };
+			foreach (string key in keyWord)
+			{
+				if (post.Content.Contains(key))
+				{
+					return BadRequest();
+				}
+			}
+			try
+			{
+				post.CreateAt = DateTime.Now;
+				await _postRepository.UpdateAsync(post);
+				return NoContent();
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, ex.Message);
+			}
+		}
+		[HttpDelete("{id_post}")]
         public async Task<IActionResult> Delete(string id_post)
         {
             try
@@ -107,10 +120,6 @@ namespace Web_Social_network_BE.Controllers
             try
             {
                 var post = await _postRepository.GetAllAsyncByUserId(id_user);
-                if (post.IsNullOrEmpty())   //Trường hợp người dùng không tồn tại thì đúng, nhưng nếu người dùng không đăng bài thì sẽ không hợp lí
-                {
-                    return NotFound();
-                }
                 return Ok(post);
             }
             catch (Exception ex)
