@@ -33,7 +33,24 @@ namespace Web_Social_network_BE.Repositories.ImageRepository
                 throw new Exception("An error occurred while getting all image for post.", ex);
             }
         }
-        public async Task<IEnumerable> GetImageByPostId (string PostId)
+		public async Task<IEnumerable> GetImageByUserId(string userId)
+		{
+			List<Image> images = new List<Image>();
+			List<Post> posts = await _context.Posts.Where(x => x.UserId == userId).ToListAsync();
+			if (posts != null)
+			{
+				for (int i = 0; i < posts.Count; i++)
+				{
+					List<Image> imageinPost = await _context.Images.Where(x => x.PostId == posts[i].PostId).ToListAsync();
+					foreach (var image in imageinPost)
+					{
+						images.Add(image);
+					}
+				}
+			}
+			return images;
+		}
+		public async Task<IEnumerable> GetImageByPostId (string PostId)
         {
             try
             {
