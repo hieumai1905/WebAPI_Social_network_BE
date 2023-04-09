@@ -146,5 +146,18 @@ namespace Web_Social_network_BE.Controllers
             }
 
         }
-    }
+		[HttpGet("month/posts")]
+        public async Task<IActionResult> GetAllPostInThisMonth()
+        {
+            try
+            {
+                var postInMonth = await _postRepository.GetAllInMonthAsync();
+                return Ok(postInMonth);
+			}
+            catch (Exception ex)
+            {
+				return StatusCode(500, ex.Message);
+			}
+        }
+	}
 }

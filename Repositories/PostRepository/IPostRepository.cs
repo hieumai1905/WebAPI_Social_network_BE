@@ -9,6 +9,7 @@ namespace Web_Social_network_BE.Repositories.PostRepository
         //Lấy hết những người dùng đã like bài
         Task<IEnumerable<Like>> GetAllUserLikeAsync(string postId);
 
+        Task<IEnumerable<Post>> GetAllInMonthAsync();
 
     }
 }
