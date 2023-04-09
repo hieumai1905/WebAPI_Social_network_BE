@@ -54,7 +54,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
         }
 
-        public async Task<User> LookAsync(string key)
+        public async Task<User> LockAsync(string key)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
                 {
                     throw new ArgumentException($"User not found with id {key}");
                 }
-                user.UserInfo.Status = "LOOK";
+                user.UserInfo.Status = "LOCK";
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
                 return user;
@@ -74,7 +74,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
         }
         
-        public async Task<User> UnLookAsync(string key)
+        public async Task<User> UnLockAsync(string key)
         {
             try
             {
