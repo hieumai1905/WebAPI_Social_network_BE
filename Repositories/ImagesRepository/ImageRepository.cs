@@ -97,22 +97,21 @@ namespace Web_Social_network_BE.Repositories.ImageRepository
 
         public async Task DeleteAsync(string key)
         {
-            try
-            {
-                var imagetoDelete = await _context.Images.FindAsync(key);
-
-                if (imagetoDelete == null)
-                {
-                    throw new ArgumentException("Image does not exist");
-                }
-                _context.Images.Remove(imagetoDelete);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while deleting image", ex);
-            }
-        }
+			try
+			{
+				var imageToDelete = await _context.Images.Where(x => x.PostId == key).ToListAsync();
+				if (imageToDelete != null)
+				{
+					for (int i = 0; i < imageToDelete.Count; i++)
+						_context.Remove(imageToDelete[i]);
+				}
+				await _context.SaveChangesAsync();
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("An error occurred while deleting image", ex);
+			}
+		}
 
         public async Task DeleteImageByPostId(string postId)
         {

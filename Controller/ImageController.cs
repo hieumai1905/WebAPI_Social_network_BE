@@ -96,23 +96,23 @@ namespace Web_Social_network_BE.Controller
             await _imageRepository.UpdateAsync(image);
             return Ok();
         }
-        //Xóa ảnh có id = ImageId
-        [HttpDelete("{ImageId}")]
-        public async Task<IActionResult> Delete(string ImageId)
-        {
-            try
-            {
-                await _imageRepository.DeleteAsync(ImageId);
-                return NoContent();
-            }
-            catch (ArgumentException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred while deleting Image with id : {ex.Message}");
-            }
-        }
-    }
+		//Xóa ảnh có id = ImageId
+		[HttpDelete("{PostId}")]
+		public async Task<IActionResult> Delete(string PostId)
+		{
+			try
+			{
+				await _imageRepository.DeleteAsync(PostId);
+				return NoContent();
+			}
+			catch (ArgumentException ex)
+			{
+				return NotFound(ex.Message);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, $"An error occurred while deleting Image with id : {ex.Message}");
+			}
+		}
+	}
 }
