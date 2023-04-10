@@ -14,7 +14,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
         Task<IEnumerable<User>> FindUserContent(string content);
         Task<IEnumerable<User>> GetAllWithInfoAsync();
 
-        Task<User> LookAsync(string key);
-        Task<User> UnLookAsync(string key);
+        Task<User> LockAsync(string key);
+        Task<User> UnLockAsync(string key);
     }
 }
