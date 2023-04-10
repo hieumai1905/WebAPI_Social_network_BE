@@ -262,7 +262,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
                 {
                     UserId = Guid.NewGuid().ToString(),
                     FullName = account.Name,
-                    Avatar = null,
+                    Avatar = "images/astofol.png",
                     UserInfoId = userInfoId,
                     UserInfo = new UsersInfo()
                     {
