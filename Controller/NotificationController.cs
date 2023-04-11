@@ -51,6 +51,19 @@ namespace Web_Social_network_BE.Controller
 				return StatusCode(500, ex.Message);
 			}
 		}
+		[HttpGet("userTarget/{id}")]
+		public async Task<IActionResult> GetNotificationByUserTarget(string id)
+		{
+            try
+            {
+				var userTarget = await _notificationRepository.GetAllAsyncByUserTargetId(id);
+                return Ok(userTarget);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteNotificationById(string id)
 		{

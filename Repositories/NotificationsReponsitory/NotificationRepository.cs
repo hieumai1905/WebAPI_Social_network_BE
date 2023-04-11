@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Web_Social_network_BE.Handle;
 using Web_Social_network_BE.Models;
 using Web_Social_network_BE.RequestModel;
@@ -61,7 +62,19 @@ namespace Web_Social_network_BE.Repositories.NotificationsReponsitory
 			}
 		}
 
-		public async Task<Notification> GetByIdAsync(string key)
+        public async Task<IEnumerable<Notification>> GetAllAsyncByUserTargetId(string userTargetId)
+        {
+            try
+            {
+                return await _context.Notifications.Where(context => context.UserTargetId == userTargetId).OrderByDescending(x => x.NotificationsAt).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while getting all notification.{ex}");
+            }
+        }
+
+        public async Task<Notification> GetByIdAsync(string key)
 		{
 			try
 			{
@@ -73,7 +86,9 @@ namespace Web_Social_network_BE.Repositories.NotificationsReponsitory
 			}
 		}
 
-		public async Task UpdateAsync(Notification entity)
+
+
+        public async Task UpdateAsync(Notification entity)
 		{
 			try
 			{
