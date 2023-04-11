@@ -64,6 +64,34 @@ public class AdminController : ControllerBase
         }
     }
 
+    [HttpPut("lock/{userId}")]
+    public async Task<IActionResult> LookUser(string userId)
+    {
+        try
+        {
+            var user = await _userRepository.LockAsync(userId);
+            return Ok(user);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+    
+    [HttpPut("un-lock/{userId}")]
+    public async Task<IActionResult> UnLookUser(string userId)
+    {
+        try
+        {
+            var user = await _userRepository.UnLockAsync(userId);
+            return Ok(user);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+
     [HttpDelete("posts/{id_post}")]
     public async Task<IActionResult> DeletePost(string id_post)
     {

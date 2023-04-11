@@ -104,5 +104,18 @@ namespace Web_Social_network_BE.Repositories.PostRepository
                 throw new Exception("Error while get all user like post", ex);
             }
         }
+
+        public async Task<IEnumerable<Post>> GetAllInMonthAsync()
+        {
+            int month = DateTime.Now.Month;
+            try
+            {
+                return await _context.Posts.Where(context => context.CreateAt.Month == month).ToListAsync();
+            }
+			catch (Exception ex)
+			{
+				throw new Exception("Error while get all post in this month", ex);
+			}
+		}
     }
 }
