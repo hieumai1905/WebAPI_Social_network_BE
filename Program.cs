@@ -6,6 +6,7 @@ using Web_Social_network_BE.Repositories.RelationRepository;
 using Web_Social_network_BE.Repositories.ImageRepository;
 using Web_Social_network_BE.Repositories.PostRepository;
 using Web_Social_network_BE.Repositories.UserRepository;
+using Web_Social_network_BE.Repositories.NotificationsReponsitory;
 
 namespace Web_Social_network_BE
 {
@@ -63,6 +64,7 @@ namespace Web_Social_network_BE
             builder.Services.AddScoped<IRelationRepository, RelationRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRequestCodeRepository, RequestCodeRepository>();
+            builder.Services.AddScoped<INotificationRepository , NotificationRepository>();
 
             // ------------------------------------------------------------//
 
