@@ -4477,19 +4477,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Admin\\.nuget\\packages\\": {}
+    "C:\\Users\\ADMIN\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\OneDrive - University of transport and Communication\\Máy tính\\TestBE\\WebAPI_Social_network_BE\\Web_Social_network_BE.csproj",
+      "projectUniqueName": "E:\\HK6\\LTWeb\\BTL\\BEVer2\\WebAPI_Social_network_BE\\Web_Social_network_BE.csproj",
       "projectName": "Web_Social_network_BE",
-      "projectPath": "C:\\Users\\Admin\\OneDrive - University of transport and Communication\\Máy tính\\TestBE\\WebAPI_Social_network_BE\\Web_Social_network_BE.csproj",
-      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\OneDrive - University of transport and Communication\\Máy tính\\TestBE\\WebAPI_Social_network_BE\\obj\\",
+      "projectPath": "E:\\HK6\\LTWeb\\BTL\\BEVer2\\WebAPI_Social_network_BE\\Web_Social_network_BE.csproj",
+      "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
+      "outputPath": "E:\\HK6\\LTWeb\\BTL\\BEVer2\\WebAPI_Social_network_BE\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4575,7 +4575,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
       }
     }
   }
