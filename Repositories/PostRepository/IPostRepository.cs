@@ -1,4 +1,5 @@
-﻿using Web_Social_network_BE.Models;
+﻿using System.Collections;
+using Web_Social_network_BE.Models;
 
 namespace Web_Social_network_BE.Repositories.PostRepository
 {
@@ -11,5 +12,6 @@ namespace Web_Social_network_BE.Repositories.PostRepository
 
         Task<IEnumerable<Post>> GetAllInMonthAsync();
 
-    }
+		Task<IEnumerable> GetAllPostForHomeAsync(string userId);
+	}
 }

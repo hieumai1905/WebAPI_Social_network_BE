@@ -16,5 +16,6 @@ namespace Web_Social_network_BE.Repositories.UserRepository
 
         Task<User> LockAsync(string key);
         Task<User> UnLockAsync(string key);
+        Task<User>  BanAsync(string key);
     }
 }
