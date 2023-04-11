@@ -7,7 +7,7 @@ public partial class Message
 {
     public long MessageId { get; set; }
 
-    public DateTime SendAt { get; set; }
+    public DateTime SendAt { get; set; } = DateTime.Now;
 
     public string Content { get; set; } = null!;
 

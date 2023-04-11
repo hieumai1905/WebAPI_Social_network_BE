@@ -5,7 +5,7 @@ namespace Web_Social_network_BE.Models;
 
 public partial class Post
 {
-    public string PostId { get; set; } = null!;
+    public string PostId { get; set; } = ""!;
 
     public DateTime CreateAt { get; set; }
 

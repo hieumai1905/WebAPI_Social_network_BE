@@ -9,7 +9,7 @@ public partial class Notification
 
     public string Content { get; set; } = null!;
 
-    public DateTime NotificationsAt { get; set; }
+    public DateTime NotificationsAt { get; set; } = DateTime.Now;
 
     public string Status { get; set; } = null!;
 

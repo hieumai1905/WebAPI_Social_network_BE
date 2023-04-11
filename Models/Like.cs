@@ -7,7 +7,7 @@ public partial class Like
 {
     public long LikeId { get; set; }
 
-    public DateTime LikeAt { get; set; }
+    public DateTime LikeAt { get; set; } = DateTime.Now;
 
     public string UserId { get; set; } = null!;
 

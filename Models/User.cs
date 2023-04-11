@@ -9,11 +9,11 @@ public partial class User
 
     public string? Avatar { get; set; }
 
-    public string UserId { get; set; } = null!;
+    public string UserId { get; set; } = ""!;
 
-    public string UserInfoId { get; set; } = null!;
+    public string UserInfoId { get; set; } = ""!;
 
-   
+
 
     public virtual UsersInfo UserInfo { get; set; } = null!;
 }

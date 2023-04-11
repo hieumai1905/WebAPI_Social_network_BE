@@ -5,7 +5,7 @@ namespace Web_Social_network_BE.Models;
 
 public partial class UsersInfo
 {
-    public string UserInfoId { get; set; } = null!;
+    public string UserInfoId { get; set; } = ""!;
 
     public string Password { get; set; } = null!;
 
