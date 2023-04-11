@@ -54,7 +54,27 @@ namespace Web_Social_network_BE.Repositories.UserRepository
             }
         }
 
-        public async Task<User> LockAsync(string key)
+		public async Task<User> BanAsync(string key)
+		{
+			try
+			{
+				var user = await _context.Users.AsNoTracking().Include(x => x.UserInfo).FirstOrDefaultAsync(x => x.UserId == key);
+				if (user == null)
+				{
+					throw new ArgumentException($"User not found with id {key}");
+				}
+				user.UserInfo.Status = "BAN";
+				_context.Users.Update(user);
+				await _context.SaveChangesAsync().ConfigureAwait(false);
+				return user;
+			}
+			catch (Exception ex)
+			{
+				throw new Exception($"An error occurred while updating user {key}.{ex}");
+			}
+		}
+
+		public async Task<User> LockAsync(string key)
         {
             try
             {

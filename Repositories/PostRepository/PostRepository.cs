@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using Microsoft.VisualBasic;
+using System.Collections;
 
 namespace Web_Social_network_BE.Repositories.PostRepository
 {
@@ -12,6 +13,7 @@ namespace Web_Social_network_BE.Repositories.PostRepository
         {
             _context = context;
         }
+
         public async Task<IEnumerable<Post>> GetAllAsyncByUserId(string userId)
         {
             try
@@ -117,5 +119,22 @@ namespace Web_Social_network_BE.Repositories.PostRepository
 				throw new Exception("Error while get all post in this month", ex);
 			}
 		}
+		public async Task<IEnumerable> GetAllPostForHomeAsync(string userId)
+		{
+			var postForHome = (from relation in _context.Relations
+								   join post in _context.Posts on relation.UserTargetIduserId equals post.UserId
+								   where relation.UserId == userId
+                                   where relation.TypeRelation == "FRIEND"
+                                   || relation.TypeRelation == "FOLLOW"
+								   select new { post.PostId, post.CreateAt, post.Content, post.UserId })
+								  .Union(
+									from post in _context.Posts
+									where post.UserId == userId
+									select new
+									{ post.PostId, post.CreateAt, post.Content, post.UserId }).OrderByDescending(x => x.CreateAt).ToListAsync();
+			//var postHome = postFromFriends.Union(postMyself).OrderByDescending(x => x.CreateAt).ToListAsync();
+			return await postForHome;
+		}
+
     }
 }
