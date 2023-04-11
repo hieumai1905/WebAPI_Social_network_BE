@@ -230,7 +230,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
                     .FirstOrDefaultAsync(u => u.UserInfo.Email == account.Email);
                 if (user == null)
                 {
-                    throw new ArgumentException($"User with email {account.Email} not found");
+                    throw new ArgumentException($"Account with email {account.Email} does not exist");
                 }
 
                 if (user.UserInfo.Password != MD5Hash.GetHashString(account.Password))
