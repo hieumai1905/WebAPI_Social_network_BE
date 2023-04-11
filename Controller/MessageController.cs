@@ -24,7 +24,7 @@ namespace Web_Social_network_BE.Controller
             try
             {
                 var userId = _session.GetString("UserId");
-                if (_messageRepository.CheckConversation(userId,userTargetId) == true)
+                if (await _messageRepository.CheckConversation(userId,userTargetId) == true)
                     return Ok(await _messageRepository.GetMessageInConversationByUserId(userId,userTargetId));
                 else
                     return Ok(await _messageRepository.GetMessageInConversationByUserId(userTargetId, userId));
@@ -40,19 +40,20 @@ namespace Web_Social_network_BE.Controller
             try
             {
                 var userId = _session.GetString("UserId");
-                if (_messageRepository.CheckConversation(userId,userTargetId)==false && _messageRepository.CheckConversation(userTargetId,userId)==false)
+                if (await _messageRepository.CheckConversation(userId,userTargetId)==false && await _messageRepository.CheckConversation(userTargetId,userId)==false)
                 {
                     Conversation conversation = new Conversation();
                     conversation.ConversationId = Guid.NewGuid().ToString();
                     conversation.UserId = userId;
                     conversation.UserTargetId = userTargetId;
-                    _messageRepository.AddConversation(conversation); 
+                    await _messageRepository.AddConversation(conversation); 
                 }
                 Message message = new Message(); 
                 message.SendAt = DateTime.Now;
-                message.ConversationId = _messageRepository.GetConversation(userId, userTargetId).ConversationId;
+                Conversation conversationOfMessage = await _messageRepository.GetConversation(userId, userTargetId);
+                message.ConversationId = conversationOfMessage.ConversationId;
                 message.Content = content;
-                if (_messageRepository.GetConversation(userId, userTargetId).UserId == userId)
+                if (conversationOfMessage.UserId == userId)
                     message.Type = "1";
                 else
                     message.Type = "2";
@@ -69,7 +70,7 @@ namespace Web_Social_network_BE.Controller
         {
             try
             {
-                var message = _messageRepository.GetMessageByMessageId(messageId);
+                var message = await _messageRepository.GetMessageByMessageId(messageId);
                 message.Content = "Message has been recovered";
                 await _messageRepository.UpdateAsync(message);
                 return Ok();
