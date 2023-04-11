@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -58,6 +59,9 @@ namespace Web_Social_network_BE.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Add([FromBody] Post post)
 		{
+			string postId = Guid.NewGuid().ToString();
+			post.PostId = postId;
+			post.CreateAt = DateTime.Now;
 			var userId = _session.GetString("UserId");
             var userStatus = _session.GetString("UserStatus");
 			//Nếu không phải người dùng thì không được đăng bài -->  Phòng chống nghệ thuật hắc cơ
@@ -84,7 +88,8 @@ namespace Web_Social_network_BE.Controllers
             if (checkSpam)
             {
                 await _userRepository.BanAsync(userId);
-                return StatusCode(403, "Forbidden");
+				_session.SetString("UserStatus", "BAN");
+				return StatusCode(403, "Forbidden");
 			}
             //Không cho đăng bài viết vi phạm
 			string[] keyWord = new string[] { "chien tranh", "banh mi", "sua dac", "an khuya" };
@@ -97,9 +102,6 @@ namespace Web_Social_network_BE.Controllers
 			}
 			try
 			{
-				string postId = Guid.NewGuid().ToString();
-				post.PostId = postId;
-				post.CreateAt = DateTime.Now;
 				var newPost = await _postRepository.AddAsync(post);
 				return Ok(newPost);
 			}
