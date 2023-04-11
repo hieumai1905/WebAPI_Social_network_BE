@@ -9,10 +9,6 @@ public partial class Post
 
     public DateTime CreateAt { get; set; }
 
-    public long? CommnetCount { get; set; }
-
-    public long? LikeCount { get; set; }
-
     public string Content { get; set; } = null!;
 
     public string AccessModifier { get; set; } = null!;
@@ -20,4 +16,8 @@ public partial class Post
     public string PostType { get; set; } = null!;
 
     public string UserId { get; set; } = null!;
+
+   
+
+   
 }

@@ -14,4 +14,6 @@ public partial class Relation
     public string UserId { get; set; } = null!;
 
     public string UserTargetIduserId { get; set; } = null!;
+
+    
 }

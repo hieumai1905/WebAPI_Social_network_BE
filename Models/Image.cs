@@ -12,4 +12,6 @@ public partial class Image
     public string Type { get; set; } = null!;
 
     public string PostId { get; set; } = null!;
+
+    
 }

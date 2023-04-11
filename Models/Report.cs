@@ -3,17 +3,13 @@ using System.Collections.Generic;
 
 namespace Web_Social_network_BE.Models;
 
-public partial class Like
+public partial class Report
 {
-    public long LikeId { get; set; }
-
-    public DateTime LikeAt { get; set; } = DateTime.Now;
-
     public string UserId { get; set; } = null!;
 
     public string PostId { get; set; } = null!;
 
-    public long CommentId { get; set; }
+    public string ReportContent { get; set; } = null!;
 
     
 }

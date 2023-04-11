@@ -55,7 +55,7 @@ namespace Web_Social_network_BE
 
             // ----------------------add scope-----------------------------//
 
-            builder.Services.AddDbContext<SocialNetworkN01Context>();
+            builder.Services.AddDbContext<SocialNetworkN01Ver2Context>();
             builder.Services.AddScoped<ICommentRepository, CommentRepository>();
             builder.Services.AddScoped<IImageRepository, ImageRepository>();
             builder.Services.AddScoped<ILikeRepository, LikeRepository>();

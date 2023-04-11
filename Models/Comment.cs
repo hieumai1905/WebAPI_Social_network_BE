@@ -9,11 +9,13 @@ public partial class Comment
 
     public long? LikeCount { get; set; }
 
-    public DateTime CommentAt { get; set; }
+    public DateTime CommentAt { get; set; } = DateTime.Now;
 
     public string Content { get; set; } = null!;
 
     public string PostId { get; set; } = null!;
 
     public string UserId { get; set; } = null!;
+
+   
 }

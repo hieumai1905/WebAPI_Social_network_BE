@@ -6,8 +6,8 @@ namespace Web_Social_network_BE.Repositories.CommentRepository
 {
     public class CommentRepository : ICommentRepository
     {
-        private readonly SocialNetworkN01Context _context;
-        public CommentRepository(SocialNetworkN01Context context)
+        private readonly SocialNetworkN01Ver2Context _context;
+        public CommentRepository(SocialNetworkN01Ver2Context context)
         {
             _context = context;
         }
@@ -22,7 +22,7 @@ namespace Web_Social_network_BE.Repositories.CommentRepository
                 throw new ArgumentException($"Post with id {postId} does not exist");
             }
         }
-        public async Task<Post> AddCommentByPostIdAsync(string postId, Comment entity)
+        public async Task<Comment> AddCommentByPostIdAsync(string postId, Comment entity)
         {
             var postToComment = await _context.Posts.FirstOrDefaultAsync(u => u.PostId == postId).ConfigureAwait(false);
             if (postToComment == null)
@@ -32,7 +32,7 @@ namespace Web_Social_network_BE.Repositories.CommentRepository
             _context.Comments.Add(entity);
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
-            return postToComment;
+            return entity;
         }
 
         public async Task<Comment> GetByIdAsync(long key)
@@ -46,7 +46,7 @@ namespace Web_Social_network_BE.Repositories.CommentRepository
                 throw new Exception($"An error occurred while getting comment with id {key}.", ex);
             }
         }
-        public async Task<Post> UpdateCommentByPostIdAsync(string postId, Comment entity)
+        public async Task<Comment> UpdateCommentByPostIdAsync(string postId, Comment entity)
         {
             var postToComment = await _context.Posts
                 .FirstOrDefaultAsync(u => u.PostId == postId).ConfigureAwait(false);
@@ -64,7 +64,7 @@ namespace Web_Social_network_BE.Repositories.CommentRepository
             _context.Comments.Update(entity);
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
-            return postToComment;
+            return entity;
         }
 
         public async Task<Comment> DeleteCommentByPostIdAsync(string postId, long commentId)
@@ -107,9 +107,16 @@ namespace Web_Social_network_BE.Repositories.CommentRepository
             }
         }
         //Khong Dung Den
-        public Task<IEnumerable<Comment>> GetAllAsync()
+        public async Task<IEnumerable<Comment>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _context.Comments.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while get all comment.", ex);
+            }
         }
 
         public Task<Comment> AddAsync(Comment entity)

@@ -7,8 +7,8 @@ namespace Web_Social_network_BE.Repositories.PostRepository
 {
     public class PostRepository : IPostRepository
     {
-        private readonly SocialNetworkN01Context _context;
-        public PostRepository(SocialNetworkN01Context context)
+        private readonly SocialNetworkN01Ver2Context _context;
+        public PostRepository(SocialNetworkN01Ver2Context context)
         {
             _context = context;
         }
