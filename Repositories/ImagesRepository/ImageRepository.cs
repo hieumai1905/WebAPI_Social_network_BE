@@ -6,8 +6,8 @@ namespace Web_Social_network_BE.Repositories.ImageRepository
 {
     public class ImageRepository : IImageRepository
     {
-        private readonly SocialNetworkN01Context _context;
-        public ImageRepository(SocialNetworkN01Context context)
+        private readonly SocialNetworkN01Ver2Context _context;
+        public ImageRepository(SocialNetworkN01Ver2Context context)
         {
             _context = context;
         }

@@ -8,8 +8,8 @@ namespace Web_Social_network_BE.Repositories.RelationRepository
 {
     public class RelationRepository : IRelationRepository
     {
-        private readonly SocialNetworkN01Context _context;
-        public RelationRepository(SocialNetworkN01Context context)
+        private readonly SocialNetworkN01Ver2Context _context;
+        public RelationRepository(SocialNetworkN01Ver2Context context)
         {
             _context = context;
         }

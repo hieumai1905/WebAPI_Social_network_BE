@@ -5,7 +5,7 @@ namespace Web_Social_network_BE.Models;
 
 public partial class UsersInfo
 {
-    public string UserInfoId { get; set; } = "";
+    public string UserInfoId { get; set; } = null!;
 
     public string Password { get; set; } = null!;
 
@@ -26,4 +26,7 @@ public partial class UsersInfo
     public string? AboutMe { get; set; }
 
     public string? CoverImage { get; set; }
+
+    public DateTime RegisterAt { get; set; }
+
 }

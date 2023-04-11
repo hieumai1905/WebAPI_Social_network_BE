@@ -6,8 +6,8 @@ namespace Web_Social_network_BE.Repositories.CommentRepository
 {
     public class CommentRepository : ICommentRepository
     {
-        private readonly SocialNetworkN01Context _context;
-        public CommentRepository(SocialNetworkN01Context context)
+        private readonly SocialNetworkN01Ver2Context _context;
+        public CommentRepository(SocialNetworkN01Ver2Context context)
         {
             _context = context;
         }

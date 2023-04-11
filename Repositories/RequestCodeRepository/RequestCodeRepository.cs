@@ -5,9 +5,9 @@ namespace Web_Social_network_BE.Repositories.UserRepository;
 
 public class RequestCodeRepository : IRequestCodeRepository
 {
-    private readonly SocialNetworkN01Context _context;
+    private readonly SocialNetworkN01Ver2Context _context;
 
-    public RequestCodeRepository(SocialNetworkN01Context context)
+    public RequestCodeRepository(SocialNetworkN01Ver2Context context)
     {
         _context = context;
     }

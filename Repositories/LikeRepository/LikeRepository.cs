@@ -7,8 +7,8 @@ namespace Web_Social_network_BE.Repositories.LikeRepository
 {
     public class LikeRepository : ILikeRepository
     {
-        private readonly SocialNetworkN01Context _context;
-        public LikeRepository(SocialNetworkN01Context context)
+        private readonly SocialNetworkN01Ver2Context _context;
+        public LikeRepository(SocialNetworkN01Ver2Context context)
         {
             _context = context;
         }

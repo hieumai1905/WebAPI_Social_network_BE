@@ -7,9 +7,9 @@ namespace Web_Social_network_BE.Repositories.UserRepository
 {
     public class UserRepository : IUserRepository
     {
-        private readonly SocialNetworkN01Context _context;
+        private readonly SocialNetworkN01Ver2Context _context;
 
-        public UserRepository(SocialNetworkN01Context context)
+        public UserRepository(SocialNetworkN01Ver2Context context)
         {
             _context = context;
         }

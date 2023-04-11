@@ -16,4 +16,6 @@ public partial class Comment
     public string PostId { get; set; } = null!;
 
     public string UserId { get; set; } = null!;
+
+   
 }
