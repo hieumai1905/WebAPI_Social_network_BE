@@ -24,11 +24,11 @@ namespace Web_Social_network_BE.Repositories.MessageRepository
                 throw new Exception("An error occurred while getting conservation.", ex);
             }
         }
-        public Message GetMessageByMessageId(int messageId)
+        public async Task<Message> GetMessageByMessageId(int messageId)
         {
             try
             {
-                var message = _context.Messages.AsNoTracking().FirstOrDefault(x=>x.MessageId==messageId);
+                var message = await _context.Messages.AsNoTracking().FirstOrDefaultAsync(x=>x.MessageId==messageId);
                 return message;
             }
             catch (Exception ex)
@@ -49,11 +49,11 @@ namespace Web_Social_network_BE.Repositories.MessageRepository
                 throw new Exception("An error occurred while add conservation.", ex);
             }
         }
-        public bool CheckConversation(string userId, string userTargetId)
+        public async Task<bool> CheckConversation(string userId, string userTargetId)
         {
             try
             {
-                if (_context.Conversations.Where(x => x.UserId == userId && x.UserTargetId == userTargetId).ToList().Count!=0)
+                if (await _context.Conversations.Where(x => x.UserId == userId && x.UserTargetId == userTargetId).CountAsync() != 0)
                     return true;
                 return false;
             }
@@ -62,11 +62,11 @@ namespace Web_Social_network_BE.Repositories.MessageRepository
                 throw new Exception("An error occurred while check conservation.", ex);
             }
         }
-        public Conversation GetConversation(string userId, string userTargetId)
+        public async Task<Conversation> GetConversation(string userId, string userTargetId)
         {
             try
             {
-                var conversation = _context.Conversations.Where(x => (x.UserId == userId && x.UserTargetId == userTargetId) || (x.UserId == userTargetId && x.UserTargetId == userId)).ToList();
+                var conversation = await _context.Conversations.Where(x => (x.UserId == userId && x.UserTargetId == userTargetId) || (x.UserId == userTargetId && x.UserTargetId == userId)).ToListAsync();
                 return conversation[0];
             }
             catch (Exception ex)
@@ -97,7 +97,7 @@ namespace Web_Social_network_BE.Repositories.MessageRepository
                     throw new ArgumentException("message does not exist");
                 }
                 _context.Messages.Update(entity);
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
