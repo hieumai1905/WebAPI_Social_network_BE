@@ -222,7 +222,7 @@ namespace Web_Social_network_BE.Repositories.UserRepository
                 {
                     UserId = Guid.NewGuid().ToString(),
                     FullName = account.Name,
-                    Avatar = null,
+                    Avatar = "images/astofol.png",
                     UserInfoId = userInfoId,
                     UserInfo = new UsersInfo()
                     {
@@ -234,7 +234,8 @@ namespace Web_Social_network_BE.Repositories.UserRepository
                         Status = "INACTIVE",
                         UserRole = "USER_ROLE",
                         AboutMe = "",
-                        CoverImage = ""
+                        CoverImage = "",
+                        RegisterAt = DateTime.Today
                     }
                 };
                 _context.Users.Add(user);
