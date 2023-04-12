@@ -12,6 +12,6 @@ namespace Web_Social_network_BE.Repositories.PostRepository
 
         Task<IEnumerable<Post>> GetAllInMonthAsync();
 
-		Task<IEnumerable> GetAllPostForHomeAsync(string userId);
+	Task<IEnumerable<Post>> GetAllPostForHomeAsync(string userId);
 	}
 }
