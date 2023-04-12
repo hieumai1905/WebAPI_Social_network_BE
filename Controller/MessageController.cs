@@ -34,7 +34,7 @@ namespace Web_Social_network_BE.Controller
                 return StatusCode(500, $"An error occurred while getting conservation: {ex.Message}");
             }
         }
-        [HttpPost("send-message/{userTargetId}")] 
+        [HttpPost("send-message/{userTargetId}/{content}")] 
         public async Task<IActionResult> SendMessage(string userTargetId,string content)
         {
             try
