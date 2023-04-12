@@ -77,6 +77,7 @@ namespace Web_Social_network_BE.Controllers
             //Nếu spam thì  BAN
             bool checkSpam = true;
             var checkPostSpam = await _postRepository.GetAllAsyncByUserId(userId);
+            if (checkPostSpam.Count() < 3) checkSpam = false;
             foreach (var postCheck in checkPostSpam.Take(3))
             {
                 if (post.Content != postCheck.Content || postCheck.CreateAt.Day != post.CreateAt.Day)
