@@ -119,21 +119,21 @@ namespace Web_Social_network_BE.Repositories.PostRepository
 				throw new Exception("Error while get all post in this month", ex);
 			}
 		}
-		public async Task<IEnumerable> GetAllPostForHomeAsync(string userId)
+		public async Task<IEnumerable<Post>> GetAllPostForHomeAsync(string userId)
 		{
-			var postForHome = (from relation in _context.Relations
+			var postForHome =await  (from relation in _context.Relations
 								   join post in _context.Posts on relation.UserTargetIduserId equals post.UserId
 								   where relation.UserId == userId
                                    where relation.TypeRelation == "FRIEND"
                                    || relation.TypeRelation == "FOLLOW"
-								   select new { post.PostId, post.CreateAt, post.Content, post.UserId })
+								   select new Post { PostId= post.PostId,CreateAt= post.CreateAt,Content= post.Content,UserId= post.UserId, AccessModifier = post.AccessModifier,PostType= post.PostType })
 								  .Union(
 									from post in _context.Posts
 									where post.UserId == userId
-									select new
-									{ post.PostId, post.CreateAt, post.Content, post.UserId }).OrderByDescending(x => x.CreateAt).ToListAsync();
+									select new Post
+									{ PostId = post.PostId, CreateAt = post.CreateAt, Content = post.Content, UserId = post.UserId, AccessModifier = post.AccessModifier, PostType = post.PostType }).OrderByDescending(x => x.CreateAt).ToListAsync();
 			//var postHome = postFromFriends.Union(postMyself).OrderByDescending(x => x.CreateAt).ToListAsync();
-			return await postForHome;
+			return postForHome;
 		}
 
     }
