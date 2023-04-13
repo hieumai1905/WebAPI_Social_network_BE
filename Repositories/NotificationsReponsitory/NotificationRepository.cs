@@ -86,6 +86,19 @@ namespace Web_Social_network_BE.Repositories.NotificationsReponsitory
 			}
 		}
 
+        public async Task<int> GetCountNotification(string userTargetId)
+        {
+            try
+            {
+                var count = await _context.Notifications
+                    .Where(context => context.UserTargetId == userTargetId && context.Status == "NEW").CountAsync();
+				return count;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while getting all notification.{ex}");
+            }
+        }
 
 
         public async Task UpdateAsync(Notification entity)
@@ -93,11 +106,11 @@ namespace Web_Social_network_BE.Repositories.NotificationsReponsitory
 			try
 			{
 				var notiUpdate =
-					await _context.Notifications.AsNoTracking().FirstOrDefaultAsync(x => x.NotificationId == entity.NotificationId);
+					await _context.Notifications.AsNoTracking().FirstOrDefaultAsync(x => x.UserTargetId == entity.UserTargetId);
 
 				if (notiUpdate == null)
 				{
-					throw new ArgumentException($"notification with id {entity.NotificationId} does not exist");
+					throw new ArgumentException($"notification with id {entity.UserTargetId} does not exist");
 				}
 
 				_context.Notifications.Update(entity);
@@ -105,7 +118,7 @@ namespace Web_Social_network_BE.Repositories.NotificationsReponsitory
 			}
 			catch (Exception ex)
 			{
-				throw new Exception($"An error occurred while updating notification with id {entity.NotificationId}.{ex}");
+				throw new Exception($"An error occurred while updating notification with id {entity.UserTargetId}.{ex}");
 			}
 		}
 	}

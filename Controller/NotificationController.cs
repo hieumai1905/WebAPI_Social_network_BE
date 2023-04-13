@@ -64,6 +64,19 @@ namespace Web_Social_network_BE.Controller
                 return StatusCode(500, ex.Message);
             }
         }
+		[HttpGet("count/{id}")]
+		public async Task<IActionResult> GetCountNotification(string id)
+		{
+			try
+			{
+				var userTarget = await _notificationRepository.GetCountNotification(id);
+				return Ok(userTarget);
+			}
+			catch(Exception ex)
+			{
+				return StatusCode(500, ex.Message);
+			}
+		}
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteNotificationById(string id)
 		{
@@ -97,12 +110,12 @@ namespace Web_Social_network_BE.Controller
 			}
 		}
 		[HttpPut("{id}")]
-		public async Task<IActionResult> UpdateNotificationById( [FromBody] Notification noti)
+		public async Task<IActionResult> UpdateNotificationByUserTargetId( [FromBody] Notification noti)
 		{
 			try
 			{
-				await _notificationRepository.UpdateAsync(noti);
-				return NoContent();
+                    await _notificationRepository.UpdateAsync(noti);
+                    return NoContent();
 			}
 			catch (Exception ex)
 			{
