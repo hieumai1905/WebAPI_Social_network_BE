@@ -10,6 +10,7 @@ namespace Web_Social_network_BE.Repositories.CommentRepository
         Task<Comment> AddCommentByPostIdAsync(string postId, Comment entity);
         Task<Comment> UpdateCommentByPostIdAsync(string postId, Comment entity);
         Task<Comment> DeleteCommentByPostIdAsync(string postId, long commentId);
+        Task DeleteAllCommentsByPostId(string postId);
 
     }
 }
