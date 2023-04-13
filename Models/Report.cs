@@ -12,4 +12,5 @@ public partial class Report
     public string ReportContent { get; set; } = null!;
 
     
+
 }

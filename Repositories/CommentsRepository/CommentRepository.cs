@@ -124,6 +124,22 @@ namespace Web_Social_network_BE.Repositories.CommentRepository
             throw new NotImplementedException();
         }
 
+        public async Task DeleteAllCommentsByPostId(string postId)
+        {
+            try
+            {
+                
+                var commentToDelete = await _context.Comments.Where(u => u.PostId == postId).ToListAsync();
+                _context.Comments.RemoveRange(commentToDelete);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                
+            }
+            catch(Exception e)
+            {
+                throw new Exception($"An error occurred while deleting post's comments with id {postId}.", e);
+            }
+        }
+
         public Task DeleteAsync(long key)
         {
             throw new NotImplementedException();

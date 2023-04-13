@@ -42,13 +42,34 @@ namespace Web_Social_network_BE.Controller
                     Response.Cookies.Append("UserId", user.UserId);
                     Response.Cookies.Append("UserRole", user.UserInfo.UserRole);
                     Response.Cookies.Append("UserStatus", user.UserInfo.Status);
+                    _session.Remove(account.Email);
                     return Ok(user);
                 }
-
                 return BadRequest("Email or password is incorrect");
             }
             catch (Exception ex)
             {
+                var userLogin =  await _userRepository.GetByEmail(account.Email);
+                if (userLogin != null)
+                {
+                    var loginCount = _session.GetString(account.Email);
+                    if (Convert.ToInt32(loginCount) > 5)
+                    {
+                        var userLoginInfo = await _userRepository.GetInformationUser(userLogin.UserId);
+                        userLoginInfo.UserInfo.Status = "INACTIVE";
+                        await _userRepository.UpdateAsync(userLoginInfo);
+                        return BadRequest("Your account is locked");
+                    }
+
+                    if (loginCount == null)
+                    {
+                        _session.SetString(account.Email, "1");
+                    }
+                    else
+                    {
+                        _session.SetString(account.Email, (Convert.ToInt32(loginCount) + 1).ToString());
+                    }
+                }
                 return StatusCode(500, ex.Message);
             }
         }

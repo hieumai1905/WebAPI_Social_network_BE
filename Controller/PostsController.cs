@@ -1,23 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using Web_Social_network_BE.Models;
 using Web_Social_network_BE.Repositories.PostRepository;
+using Web_Social_network_BE.Repositories.UserRepository;
 
 namespace Web_Social_network_BE.Controllers
 {
-    [Route("v1/api/[controller]")]
+    [Route("v2/api/[controller]")]
     [ApiController]
+
     public class PostsController : ControllerBase
     {
         private readonly IPostRepository _postRepository;
+        private readonly IUserRepository _userRepository;
+		private readonly IHttpContextAccessor _httpContextAccessor;
+		private readonly ISession _session;
 
-        public PostsController(IPostRepository postRepository)
-        {
-            _postRepository = postRepository;
-        }
-
-        [HttpGet]
+		public PostsController(IPostRepository postRepository, IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
+		{
+			this._postRepository = postRepository;
+            _userRepository = userRepository;
+			_httpContextAccessor = httpContextAccessor;
+			_session = _httpContextAccessor.HttpContext.Session;
+		}
+		[HttpGet]
         public async Task<IActionResult> GetAllPost()
         {
             try
@@ -31,24 +41,68 @@ namespace Web_Social_network_BE.Controllers
             }
 
         }
-
+        [HttpGet("home/posts")]
+        public async Task<IActionResult> GetAllForHome()
+        {
+			try
+			{
+                var userId = _session.GetString("UserId");
+				var post = await _postRepository.GetAllPostForHomeAsync(userId);
+				return Ok(post);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, ex.Message);
+			}
+		}
 		[HttpPost]
 		public async Task<IActionResult> Add([FromBody] Post post)
 		{
+			string postId = Guid.NewGuid().ToString();
+			post.PostId = postId;
+			post.CreateAt = DateTime.Now;
+
+			var userId = _session.GetString("UserId");
+            var userStatus = _session.GetString("UserStatus");
+			//Nếu không phải người dùng thì không được đăng bài -->  Phòng chống nghệ thuật hắc cơ
+			if (userId != post.UserId || userId == null)
+			{
+				return StatusCode(401, "Unauthorized");
+			}
+			//Nếu người dùng bị ban thì không được đăng bài
+			if (userStatus == "BAN")
+            {
+                return StatusCode(403, "Forbidden");
+            }
+            //Nếu spam thì  BAN
+            bool checkSpam = true;
+            var checkPostSpam = await _postRepository.GetAllAsyncByUserId(userId);
+            if (checkPostSpam.Count() < 3) checkSpam = false;
+            foreach (var postCheck in checkPostSpam.Take(3))
+            {
+                if (post.Content != postCheck.Content || postCheck.CreateAt.Day != post.CreateAt.Day)
+                {
+                    checkSpam = false;
+                    break;
+                }
+            }
+            if (checkSpam)
+            {
+                await _userRepository.BanAsync(userId);
+                _session.SetString("UserStatus", "BAN");
+                return StatusCode(403, "Forbidden");
+			}
+            //Không cho đăng bài viết vi phạm
 			string[] keyWord = new string[] { "chien tranh", "banh mi", "sua dac", "an khuya" };
 			foreach (string key in keyWord)
 			{
 				if (post.Content.Contains(key))
 				{
-					return BadRequest();
+					return StatusCode(400, "Bad Request");
 				}
 			}
 			try
 			{
-				string postId = Guid.NewGuid().ToString();
-				DateTime createAt = DateTime.Now;
-				post.PostId = postId;
-				post.CreateAt = createAt;
 				var newPost = await _postRepository.AddAsync(post);
 				return Ok(newPost);
 			}
@@ -61,12 +115,24 @@ namespace Web_Social_network_BE.Controllers
 		[HttpPut("{id_post}")]
 		public async Task<IActionResult> Update(string id_post, [FromBody] Post post)
 		{
+			var userId = _session.GetString("UserId");
+			var userStatus = _session.GetString("UserStatus");
+			//Nếu không phải người dùng thì không được đăng bài --> Phòng chống nghệ thuật hắc cơ
+			if (userId != post.UserId || userId == null)
+			{
+				return StatusCode(401, "Unauthorized");
+			}
+			//Nếu người dùng bị ban thì không được đăng bài
+			if (userStatus == "BAN")
+			{
+				return StatusCode(403, "Forbidden");
+			}
 			string[] keyWord = new string[] { "chien tranh", "banh mi", "sua dac", "an khuya" };
 			foreach (string key in keyWord)
 			{
 				if (post.Content.Contains(key))
 				{
-					return BadRequest();
+					return StatusCode(400, "Bad Request"); ;
 				}
 			}
 			try
@@ -83,7 +149,20 @@ namespace Web_Social_network_BE.Controllers
 		[HttpDelete("{id_post}")]
         public async Task<IActionResult> Delete(string id_post)
         {
-            try
+            var postToDelete = await _postRepository.GetByIdAsync(id_post);
+			var userId = _session.GetString("UserId");
+			var userRole = _session.GetString("UserRole");
+            //Nếu không phải người dùng thì không được đăng bài --> Phòng chống nghệ thuật hắc cơ
+            var darkerSecurity = true;
+            if (userId == postToDelete.UserId || userRole == "ADMIN_ROLE")
+			{
+				darkerSecurity = false;
+			}
+            if (darkerSecurity)
+            {
+				return StatusCode(401, "Unauthorized");
+			}
+			try
             {
                 await _postRepository.DeleteAsync(id_post);
                 return NoContent();

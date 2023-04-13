@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using Microsoft.VisualBasic;
+using System.Collections;
 
 namespace Web_Social_network_BE.Repositories.PostRepository
 {
@@ -12,6 +13,7 @@ namespace Web_Social_network_BE.Repositories.PostRepository
         {
             _context = context;
         }
+
         public async Task<IEnumerable<Post>> GetAllAsyncByUserId(string userId)
         {
             try
@@ -97,7 +99,7 @@ namespace Web_Social_network_BE.Repositories.PostRepository
         {
             try
             {
-                return await _context.Likes.Where(context => context.PostId == postId && context.CommentId == null).ToListAsync();
+                return await _context.Likes.Where(context => context.PostId == postId).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -117,5 +119,22 @@ namespace Web_Social_network_BE.Repositories.PostRepository
 				throw new Exception("Error while get all post in this month", ex);
 			}
 		}
+		public async Task<IEnumerable<Post>> GetAllPostForHomeAsync(string userId)
+		{
+			var postForHome =await  (from relation in _context.Relations
+								   join post in _context.Posts on relation.UserTargetIduserId equals post.UserId
+								   where relation.UserId == userId
+                                   where relation.TypeRelation == "FRIEND"
+                                   || relation.TypeRelation == "FOLLOW"
+								   select new Post { PostId= post.PostId,CreateAt= post.CreateAt,Content= post.Content,UserId= post.UserId, AccessModifier = post.AccessModifier,PostType= post.PostType })
+								  .Union(
+									from post in _context.Posts
+									where post.UserId == userId
+									select new Post
+									{ PostId = post.PostId, CreateAt = post.CreateAt, Content = post.Content, UserId = post.UserId, AccessModifier = post.AccessModifier, PostType = post.PostType }).OrderByDescending(x => x.CreateAt).ToListAsync();
+			//var postHome = postFromFriends.Union(postMyself).OrderByDescending(x => x.CreateAt).ToListAsync();
+			return postForHome;
+		}
+
     }
 }
