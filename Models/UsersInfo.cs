@@ -27,6 +27,6 @@ public partial class UsersInfo
 
     public string? CoverImage { get; set; }
 
-    public DateTime RegisterAt { get; set; }
+    public DateTime RegisterAt { get; set; } = DateTime.Now;
 
 }

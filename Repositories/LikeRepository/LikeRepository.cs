@@ -124,5 +124,33 @@ namespace Web_Social_network_BE.Repositories.LikeRepository
             await _context.SaveChangesAsync();
             return postToDelete;
         }
+
+        public async Task DeleteAllLikeByPostId(string postId)
+        {
+            try
+            {
+                var likeToDelete = await _context.Likes.Where(u => u.PostId == postId).ToListAsync();
+                _context.Likes.RemoveRange(likeToDelete);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"An error occurred while deleting post's likes with id {postId}.", ex);
+            }
+        }
+
+        public async Task<IEnumerable<Like>> GetAllLikeComment(long commentId)
+        {
+            try
+            {
+                var likeComment = await _context.Likes.Where(u => u.CommentId == commentId).ToListAsync();
+                return likeComment;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while deleting comment's likes with id {commentId}.", ex);
+            }
+        }
     }
 }

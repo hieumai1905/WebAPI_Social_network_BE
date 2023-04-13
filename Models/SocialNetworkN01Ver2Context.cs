@@ -267,9 +267,9 @@ public partial class SocialNetworkN01Ver2Context : DbContext
 
         modelBuilder.Entity<Report>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("reports");
+            entity.HasKey(r => new { r.UserId, r.PostId });
+
+            entity.ToTable("reports");
 
             entity.Property(e => e.PostId)
                 .HasMaxLength(36)
@@ -286,6 +286,8 @@ public partial class SocialNetworkN01Ver2Context : DbContext
 
            
         });
+
+
 
         modelBuilder.Entity<Request>(entity =>
         {
