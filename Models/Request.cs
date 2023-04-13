@@ -7,7 +7,7 @@ public partial class Request
 {
     public long RegisterId { get; set; }
 
-    public DateTime RegisterAt { get; set; }
+    public DateTime RegisterAt { get; set; } = DateTime.Now;
 
     public string CodeType { get; set; } = null!;
 

@@ -5,9 +5,9 @@ namespace Web_Social_network_BE.Models;
 
 public partial class Post
 {
-    public string PostId { get; set; } = ""!;
+    public string PostId { get; set; } = null!;
 
-    public DateTime CreateAt { get; set; }
+    public DateTime CreateAt { get; set; } = DateTime.Now;
 
     public string Content { get; set; } = null!;
 
@@ -17,7 +17,5 @@ public partial class Post
 
     public string UserId { get; set; } = null!;
 
-   
-
-   
+    
 }

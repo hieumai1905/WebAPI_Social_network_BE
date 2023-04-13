@@ -11,5 +11,5 @@ public partial class Conversation
 
     public string UserTargetId { get; set; } = null!;
 
-   
+    
 }

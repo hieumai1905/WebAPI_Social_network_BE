@@ -17,5 +17,5 @@ public partial class Notification
 
     public string UserTargetId { get; set; } = null!;
 
-   
+    
 }

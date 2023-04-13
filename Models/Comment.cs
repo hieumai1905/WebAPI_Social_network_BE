@@ -7,9 +7,11 @@ public partial class Comment
 {
     public long CommentId { get; set; }
 
+    public long CommentReply { get; set; }
+
     public long? LikeCount { get; set; }
 
-    public DateTime CommentAt { get; set; } = DateTime.Now;
+    public DateTime CommentAt { get; set; }
 
     public string Content { get; set; } = null!;
 
@@ -18,4 +20,3 @@ public partial class Comment
     public string UserId { get; set; } = null!;
 
    
-}
