@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Web_Social_network_BE.Models;
 using Web_Social_network_BE.Repositories.CommentRepository;
+using Web_Social_network_BE.Repositories.UserRepository;
 
 namespace Web_Social_network_BE.Controller
 {
@@ -10,9 +12,15 @@ namespace Web_Social_network_BE.Controller
     public class CommentController : ControllerBase
     {
         private readonly ICommentRepository _commentRepository;
-        public CommentController(ICommentRepository commentRepository)
+        private readonly IUserRepository _userRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ISession _session;
+        public CommentController(ICommentRepository commentRepository, IUserRepository userRepository, IHttpContextAccessor httpContextAccessor)
         {
             _commentRepository = commentRepository;
+            _userRepository = userRepository;
+            _httpContextAccessor = httpContextAccessor;
+            _session = _httpContextAccessor.HttpContext.Session;
         }
         [HttpGet("posts/{postId}")]
         public async Task<IActionResult> GetAllCommentByPostId(string postId)
@@ -30,6 +38,11 @@ namespace Web_Social_network_BE.Controller
         [HttpPost("posts/{postId}")]
         public async Task<IActionResult> AddCommentByPostId(string postId, [FromBody] Comment comment)
         {
+            var userStatus = _session.GetString("UserStatus");
+            if (userStatus == "BAN")
+            {
+                return StatusCode(403, "Forbidden");
+            }
             string[] keyWord = new string[] { "chien tranh", "banh mi", "sua dac", "an khuya" };
             foreach (string key in keyWord)
             {
@@ -62,6 +75,19 @@ namespace Web_Social_network_BE.Controller
         [HttpPut("posts/{postId}/{commentId}")]
         public async Task<IActionResult> UpdateCommentById(string postId, [FromBody] Comment comment)
         {
+            var userStatus = _session.GetString("UserStatus");
+            if (userStatus == "BAN")
+            {
+                return StatusCode(403, "Forbidden");
+            }
+            string[] keyWord = new string[] { "chien tranh", "banh mi", "sua dac", "an khuya" };
+            foreach (string key in keyWord)
+            {
+                if (comment.Content.Contains(key))
+                {
+                    return BadRequest();
+                }
+            }
             if (postId != comment.PostId)
             {
                 return BadRequest("Post id in the request body does not match the id in the URL");
@@ -77,6 +103,20 @@ namespace Web_Social_network_BE.Controller
             {
                 var deletedComment = await _commentRepository.DeleteCommentByPostIdAsync(postId, commentId);
                 return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while deleting comment: {ex.Message}");
+            }
+        }
+        [HttpDelete("posts/{postId}/comment")]
+        public async Task<IActionResult> DeleteAllCommentByPostId(string postId)
+        {
+            try
+            {
+                await _commentRepository.DeleteAllCommentsByPostId(postId);
+                return Ok();
+
             }
             catch (Exception ex)
             {

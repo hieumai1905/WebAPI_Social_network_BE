@@ -10,5 +10,7 @@ namespace Web_Social_network_BE.Repositories.LikeRepository
         Task<Like> AddLikeByCommentIdAsync(long commentId, Like entity);
         Task<Like> DeleteLikeByCommentIdAsync(long commentId, string userId);
         Task<Like> DeleteAllLikeByCommentIdAsync(string postId, long commentId);
+        Task DeleteAllLikeByPostId(string postId);
+        Task<IEnumerable<Like>> GetAllLikeComment(long commentId);
     }
 }

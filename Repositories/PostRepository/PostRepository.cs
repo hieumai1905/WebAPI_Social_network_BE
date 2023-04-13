@@ -99,7 +99,7 @@ namespace Web_Social_network_BE.Repositories.PostRepository
         {
             try
             {
-                return await _context.Likes.Where(context => context.PostId == postId && context.CommentId == null).ToListAsync();
+                return await _context.Likes.Where(context => context.PostId == postId).ToListAsync();
             }
             catch (Exception ex)
             {
