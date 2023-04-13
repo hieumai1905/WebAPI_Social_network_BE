@@ -151,10 +151,15 @@ namespace Web_Social_network_BE.Controllers
         {
             var postToDelete = await _postRepository.GetByIdAsync(id_post);
 			var userId = _session.GetString("UserId");
-			var userStatus = _session.GetString("UserStatus");
-			//Nếu không phải người dùng thì không được đăng bài --> Phòng chống nghệ thuật hắc cơ
-			if (userId != postToDelete.UserId || userId == null)
+			var userRole = _session.GetString("UserRole");
+            //Nếu không phải người dùng thì không được đăng bài --> Phòng chống nghệ thuật hắc cơ
+            var darkerSecurity = true;
+            if (userId == postToDelete.UserId || userRole == "ADMIN_ROLE")
 			{
+				darkerSecurity = false;
+			}
+            if (darkerSecurity)
+            {
 				return StatusCode(401, "Unauthorized");
 			}
 			try
